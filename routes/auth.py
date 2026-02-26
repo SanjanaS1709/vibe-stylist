@@ -22,20 +22,21 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
+        gender = request.form.get('gender', 'feminine')
 
         if not name or not email or not password:
             flash('All fields are required.', 'error')
-            return render_template('register.html')
+            return render_template('auth/register.html')
 
         if password != confirm_password:
             flash('Passwords do not match.', 'error')
-            return render_template('register.html')
+            return render_template('auth/register.html')
 
         # Check if user already exists
         existing_user = supabase.table('users').select('*').eq('email', email).execute()
         if existing_user.data:
             flash('Email already registered.', 'error')
-            return render_template('register.html')
+            return render_template('auth/register.html')
 
         # Hash password and store in Supabase
         password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -43,15 +44,24 @@ def register():
             supabase.table('users').insert({
                 'name': name,
                 'email': email,
-                'password_hash': password_hash
+                'password_hash': password_hash,
+                'gender': gender
             }).execute()
-            flash('Registration successful! Please log in.', 'success')
+            
+            # Automatically log in and redirect to survey
+            user_res = supabase.table('users').select('*').eq('email', email).execute()
+            if user_res.data:
+                session['user_id'] = user_res.data[0]['id']
+                session['user_name'] = name
+                return redirect(url_for('survey.survey_page'))
+            
+            flash('Registration successful!', 'success')
             return redirect(url_for('auth.login'))
         except Exception as e:
             flash(f'Error: {str(e)}', 'error')
-            return render_template('register.html')
+            return render_template('auth/register.html')
 
-    return render_template('register.html')
+    return render_template('auth/register.html')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -61,7 +71,7 @@ def login():
 
         if not email or not password:
             flash('Please enter both email and password.', 'error')
-            return render_template('login.html')
+            return render_template('auth/login.html')
 
         # Get user from Supabase
         user_response = supabase.table('users').select('*').eq('email', email).execute()
@@ -70,12 +80,15 @@ def login():
         if user and bcrypt.check_password_hash(user['password_hash'], password):
             session['user_id'] = user['id']
             session['user_name'] = user['name']
-            return redirect(url_for('main.dashboard'))
+            from services.streak_engine import streak_engine
+            streak_engine.record_activity(user['id'])
+            
+            return redirect(url_for('main.home'))
         else:
             flash('Invalid email or password.', 'error')
-            return render_template('login.html')
+            return render_template('auth/login.html')
 
-    return render_template('login.html')
+    return render_template('auth/login.html')
 
 @auth_bp.route('/logout')
 def logout():

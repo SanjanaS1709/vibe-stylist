@@ -1,0 +1,75 @@
+<style>
+        .navbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px 60px;
+                background: linear-gradient(90deg, #4a0c11, #2b0d0d);
+                position: relative;
+                z-index: 1000;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .logo {
+                font-weight: 800;
+                font-size: 22px;
+                color: #d4af37;
+        }
+
+        .nav-links {
+                list-style: none;
+                display: flex;
+                gap: 40px;
+                margin: 0 auto;
+                padding: 0;
+        }
+
+        .nav-links li {
+                list-style: none;
+        }
+
+        .nav-links a {
+                text-decoration: none;
+                color: white;
+                font-weight: 600;
+                transition: 0.3s;
+                font-size: 15px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+        }
+
+        .nav-links a:hover {
+                color: #d4af37;
+        }
+
+        .nav-links li.active a {
+                color: #d4af37;
+                position: relative;
+        }
+
+        .nav-links li.active a::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -8px;
+                width: 100%;
+                height: 3px;
+                background: #d4af37;
+                box-shadow: 0 0 10px #d4af37;
+        }
+</style>
+
+<nav class="navbar">
+        <div class="logo">✨ VibeStylist</div>
+        <ul class="nav-links">
+                <li class="{{ 'active' if active_page == 'home' }}"><a href="{{ url_for('main.home') }}">Home</a></li>
+                <li class="{{ 'active' if active_page == 'outfit' }}"><a
+                                href="{{ url_for('outfit.choose_outfit') }}">Choose Outfit</a></li>
+                <li class="{{ 'active' if active_page == 'wardrobe' }}"><a
+                                href="{{ url_for('wardrobe.wardrobe') }}">Wardrobe</a></li>
+                <li class="{{ 'active' if active_page == 'profile' }}"><a
+                                href="{{ url_for('main.profile') }}">Profile</a></li>
+                <li class="{{ 'active' if active_page == 'skin' }}"><a href="{{ url_for('skin.analyze_skin') }}">Skin
+                                Analysis</a></li>
+        </ul>
+</nav>

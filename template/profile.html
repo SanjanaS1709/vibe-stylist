@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeStylist - Profile</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= ROOT ================= */
+
+        :root {
+            --bg1: #5a0f14;
+            --bg2: #2b0d0d;
+            --gold: #d4af37;
+            --soft-gold: #f6e27a;
+            --text: #f8f6f2;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            color: var(--text);
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            background: linear-gradient(90deg, #4a0c11, #2b0d0d);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--gold);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            position: relative;
+        }
+
+        .nav-links .active a {
+            color: var(--gold);
+        }
+
+        .nav-links .active a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 100%;
+            height: 3px;
+            background: var(--gold);
+        }
+
+        /* ================= PROFILE HEADER ================= */
+
+        .profile-header {
+            text-align: center;
+            padding: 80px 20px 40px;
+        }
+
+        .profile-pic {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 4px solid var(--gold);
+            object-fit: cover;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+        }
+
+        .level-badge {
+            display: inline-block;
+            margin-top: 15px;
+            background: var(--gold);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .profile-header h1 {
+            font-size: 48px;
+            margin-top: 20px;
+            background: linear-gradient(to right, var(--gold), var(--soft-gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ================= SECTION TITLE ================= */
+
+        .section-title {
+            text-align: center;
+            margin: 60px 0 40px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--gold);
+        }
+
+        /* ================= CARD CONTAINER ================= */
+
+        .card-box {
+            width: 85%;
+            margin: auto;
+            padding: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+        }
+
+        /* ================= STYLE STATS ================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .stats-grid img {
+            width: 100%;
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+        }
+
+        .stats-caption {
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+            color: var(--soft-gold);
+        }
+
+        .stats-description {
+            margin-top: 40px;
+            text-align: center;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        /* ================= STYLE BADGES ================= */
+
+        .badges {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .badge-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+        }
+
+        .badge-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ================= STYLE INSIGHTS ================= */
+
+        .insights-journey {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 40px;
+        }
+
+        .bar {
+            margin-bottom: 25px;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress {
+            height: 6px;
+            background: #111;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+        }
+
+        /* ================= STYLE JOURNEY ================= */
+
+        .challenge-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .challenge-input input {
+            flex: 1;
+            padding: 10px;
+            background: #111;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: white;
+        }
+
+        .challenge-input button {
+            background: var(--gold);
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .challenge-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .challenge-complete {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #3a0f0f;
+            padding: 40px 80px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            display: none;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.8);
+        }
+
+        .challenge-complete h2 {
+            color: var(--gold);
+        }
+    </style>
+</head>
+
+<body>
+
+    {% set active_page = 'profile' %}
+    {% include 'menu.html' %}
+
+    <!-- PROFILE HEADER -->
+    <section class="profile-header">
+        <img src="{{ url_for('static', filename='images/pfp.jpeg') }}" class="profile-pic">
+        <div class="level-badge">SCORE: {{ user.engagement_score }}</div>
+        <h1>{{ user.name }}</h1>
+        <p style="opacity: 0.6; margin-top: 5px;">{{ user.email }}</p>
+    </section>
+
+    <!-- STYLE STATS -->
+    <div class="section-title">YOUR STYLE STATS</div>
+    <div class="card-box">
+        <div class="stats-grid">
+            <div>
+                <img src="{{ url_for('static', filename='images/fit1.jpeg') }}">
+                <div class="stats-caption">Outfit of the Week</div>
+            </div>
+            <div>
+                <img src="{{ url_for('static', filename='images/fit2.jpeg') }}">
+                <div class="stats-caption">Best Outfit So Far</div>
+            </div>
+        </div>
+
+        <div class="stats-description">
+            Your current style patterns show an affinity for “{{ prefs.style_archetype or 'Modern' }}” aesthetics.
+            Your skin tone is analyzed as <strong>{{ user.skin_tone_result or 'Pending' }}</strong>.
+        </div>
+    </div>
+
+    <!-- STYLE BADGES -->
+    <!-- STYLE BADGES -->
+    <div class="section-title">STYLE BADGES</div>
+    <div class="card-box badges">
+        {% if badges %}
+        {% for badge in badges %}
+        <div class="badge">
+            <div class="badge-circle">
+                <img src="{{ url_for('static', filename='images/award.png') }}" alt="{{ badge.badge_name }}">
+            </div>
+            <div>{{ badge.badge_name }}</div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p style="opacity: 0.5; text-align: center; width: 100%;">No badges earned yet. Keep styling!</p>
+        {% endif %}
+    </div>
+    <!-- STYLE INSIGHTS + JOURNEY -->
+    <div class="section-title">STYLE INSIGHTS & JOURNEY</div>
+    <div class="card-box insights-journey">
+
+        <!-- INSIGHTS -->
+        <div>
+            <div class="bar">
+                <div class="bar-label"><span>Fusion Wear</span><span>85%</span></div>
+                <div class="progress">
+                    <div class="progress-fill" style="width:85%"></div>
+                </div>
+            </div>
+
+            <div class="bar">
+                <div class="bar-label"><span>Violet Tones</span><span>60%</span></div>
+                <div class="progress">
+                    <div class="progress-fill" style="width:60%"></div>
+                </div>
+            </div>
+
+            <div class="bar">
+                <div class="bar-label"><span>Confidence</span><span>92%</span></div>
+                <div class="progress">
+                    <div class="progress-fill" style="width:92%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOURNEY -->
+        <div>
+            <div class="challenge-input">
+                <input type="text" id="challengeText" placeholder="Create your own challenge...">
+                <button onclick="addChallenge()">Add</button>
+            </div>
+
+            <div id="challengeList"></div>
+        </div>
+    </div>
+
+
+    <div class="challenge-complete" id="completeBox">
+        <h2>Challenge Complete</h2>
+        <p>Style Icon Unlocked ✨</p>
+    </div>
+
+    <script>
+
+        function addChallenge() {
+            const input = document.getElementById("challengeText");
+            const text = input.value.trim();
+
+            if (text === "") return;
+
+            const list = document.getElementById("challengeList");
+
+            const item = document.createElement("div");
+            item.className = "challenge-item";
+
+            item.innerHTML = `
+        <label>
+            <input type="checkbox" onchange="toggleComplete(this)">
+            <span class="challenge-label">${text}</span>
+        </label>
+        <span>Reward: Style Icon ✨</span>
+    `;
+
+            list.appendChild(item);
+            input.value = "";
+        }
+
+        function toggleComplete(checkbox) {
+            const label = checkbox.parentElement.querySelector(".challenge-label");
+
+            if (checkbox.checked) {
+                label.style.textDecoration = "line-through";
+                showPopup();
+            } else {
+                label.style.textDecoration = "none";
+            }
+        }
+
+        function showPopup() {
+            const box = document.getElementById("completeBox");
+            box.style.display = "block";
+
+            setTimeout(() => {
+                box.style.display = "none";
+            }, 2000);
+        }
+
+    </script>
+
+</body>
+
+</html>

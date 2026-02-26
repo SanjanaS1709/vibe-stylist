@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeStylist</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================
+   THEME VARIABLES
+========================= */
+        :root {
+            --royal-red: #5a0f14;
+            --deep: #2b0d0d;
+            --gold: #d4af37;
+            --soft-gold: #f6e27a;
+            --text: #f8f6f2;
+        }
+
+        /* =========================
+   GLOBAL
+========================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        section {
+            padding: 100px 8%;
+        }
+
+        /* =========================
+   NAVBAR
+========================= */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 60px;
+            background: linear-gradient(90deg, #4a0c11, #2b0d0d);
+            position: relative;
+        }
+
+        /* Logo stays LEFT */
+        .logo {
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--gold);
+        }
+
+        /* Nav links CENTERED */
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+            margin: 0 auto;
+            /* THIS centers it */
+            padding: 0;
+        }
+
+        .nav-links li {
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            position: relative;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        /* Active gold underline */
+        .nav-links .active a {
+            color: var(--gold);
+        }
+
+        .nav-links .active a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 100%;
+            height: 3px;
+            background: var(--gold);
+            box-shadow: 0 0 12px var(--gold);
+        }
+
+
+
+
+
+        /* =========================
+   HERO
+========================= */
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            line-height: 1.1;
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, var(--gold), var(--soft-gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            margin-top: 25px;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            margin-top: 35px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .primary {
+            background: linear-gradient(45deg, var(--gold), #b8860b);
+            color: black;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .secondary {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 15px 30px;
+            background: transparent;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* =========================
+   HERO IMAGES - UPDATED FOR PROPER LAYOUT
+========================= */
+        .hero-images {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 200px 200px;
+            /* Equal rows */
+            gap: 15px;
+        }
+
+        /* Image 1 - Small (top left) */
+        .img1 {
+            grid-column: 1;
+            grid-row: 1;
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 25px;
+        }
+
+        /* Image 2 - Big (top right) - spans both rows */
+        .img2 {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            height: 415px;
+            /* 200px + 200px + 15px gap */
+            width: 100%;
+            object-fit: cover;
+            border-radius: 25px;
+        }
+
+        /* Image 3 - Big (bottom left) - spans both rows */
+        .img3 {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+            height: 415px;
+            /* 200px + 200px + 15px gap */
+            width: 100%;
+            object-fit: cover;
+            border-radius: 25px;
+        }
+
+        /* Image 4 - Small (bottom right) */
+        .img4 {
+            grid-column: 2;
+            grid-row: 2;
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 25px;
+        }
+
+        .hero-images img:hover {
+            transform: scale(1.05);
+            transition: 0.4s;
+            z-index: 10;
+        }
+
+        /* =========================
+   PARTNERS MARQUEE
+========================= */
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            background: #4a0c11;
+            padding: 20px 0;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: scroll 15s linear infinite;
+        }
+
+        .marquee span {
+            margin: 0 50px;
+            font-weight: 600;
+            font-size: 20px;
+            color: white;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* =========================
+   KEY CARDS
+========================= */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #4a0c11, #2b0d0d);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transition: 0.4s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.4);
+        }
+
+        .card h3 {
+            margin-top: 15px;
+        }
+
+        /* =========================
+   SWIPE SECTION
+========================= */
+        .swipe {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .swipe img {
+            width: 320px;
+            border-radius: 30px;
+        }
+
+        /* =========================
+   WHY SECTION
+========================= */
+        .why {
+            text-align: center;
+        }
+
+        .why-grid {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .why-item {
+            background: #3a1212;
+            padding: 30px;
+            border-radius: 20px;
+            transition: 0.4s;
+        }
+
+        .why-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        /* =========================
+   FINAL CTA
+========================= */
+        .final {
+            text-align: center;
+        }
+
+        .final h2 {
+            font-size: 52px;
+        }
+
+        .final button {
+            margin-top: 30px;
+            padding: 18px 40px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(45deg, var(--gold), #b8860b);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* =========================
+   SPARKLE
+========================= */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            animation: fade 0.8s linear forwards;
+        }
+
+        @keyframes fade {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% set active_page = 'home' %}
+    {% include 'menu.html' %}
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Fit Check,<br><span class="gold-text">Full Desi Energy.</span></h1>
+            <p>AI-powered styling that understands your mood, skin tone, and wardrobe.</p>
+            <div class="hero-buttons">
+                <button class="primary" onclick="window.location.href='/analyze-skin'">Start Skin ID</button>
+            </div>
+        </div>
+
+        <div class="hero-images">
+            <img src="{{ url_for('static', filename='images/men1.jpeg') }}" class="img2" alt="Men fashion 1">
+            <img src="{{ url_for('static', filename='images/women1.jpeg') }}" class="img3" alt="Women fashion 2">
+
+        </div>
+    </section>
+
+    <div class="marquee">
+        <div class="marquee-content">
+            <span>ZARA</span><span>H&M</span><span>MYNTRA</span>
+            <span>AJIO</span><span>FABINDIA</span><span>NIKE</span>
+            <span>ZARA</span><span>H&M</span><span>MYNTRA</span>
+            <span>AJIO</span><span>FABINDIA</span><span>NIKE</span>
+        </div>
+    </div>
+
+    <section>
+        <div class="cards">
+            <div class="card">
+                <h3>Pick Your Mood</h3>
+            </div>
+            <div class="card">
+                <h3>Upload Photo</h3>
+            </div>
+            <div class="card">
+                <h3>Add Wardrobe</h3>
+            </div>
+            <div class="card">
+                <h3>Swipe & Decide</h3>
+            </div>
+        </div>
+    </section>
+
+    <section class="swipe">
+        <div>
+            <h1>Master your <span class="gold-text">Swipe Style</span></h1>
+            <p>Swipe right to save, left to skip. AI learns fast.</p>
+        </div>
+        <img src="{{ url_for('static', filename='images/swipe.jpeg') }}" alt="Swipe interface">
+    </section>
+
+    <section class="why">
+        <h2>Why StyleSense AI?</h2>
+        <div class="why-grid">
+            <div class="why-item">Skin Tone Smart</div>
+            <div class="why-item">Desi + Modern Fusion</div>
+            <div class="why-item">Wardrobe-Based</div>
+            <div class="why-item">AI Learning</div>
+            <div class="why-item">Fast Recommendations</div>
+            <div class="why-item">Explainable AI</div>
+        </div>
+    </section>
+
+    <section class="final">
+        <h2>Stop Overthinking.<br><span class="gold-text">Start Styling.</span></h2>
+        <button>Get Your First Recommendation</button>
+    </section>
+
+    <script>
+        document.addEventListener("mousemove", function (e) {
+            const sparkle = document.createElement("div");
+            sparkle.className = "sparkle";
+            sparkle.innerHTML = "✨";
+            sparkle.style.left = e.pageX + "px";
+            sparkle.style.top = e.pageY + "px";
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 800);
+        });
+    </script>
+
+</body>
+
+</html>

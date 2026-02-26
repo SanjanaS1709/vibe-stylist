@@ -62,11 +62,19 @@ def build_color_profile(lab_values: dict[str, Any]) -> dict[str, Any]:
     contrast, contrast_confidence = detect_contrast(l_mean, l_std)
     skin_tone_bucket = detect_skin_tone_bucket(l_mean)
 
+    # Determine Color Season
+    if undertone == "warm":
+        season = "Autumn" if contrast == "high" else "Spring"
+    else:
+        season = "Winter" if contrast == "high" else "Summer"
+
     return {
         "profile_version": "1.1.0",
         "skin_tone_bucket": skin_tone_bucket,
         "undertone": undertone,
         "contrast": contrast,
+        "season": season,
+        "tone_score": f"{skin_tone_bucket.capitalize()} / {undertone.capitalize()}",
         "confidence": {
             "undertone": round(undertone_confidence, 3),
             "contrast": round(contrast_confidence, 3),
@@ -77,7 +85,7 @@ def build_color_profile(lab_values: dict[str, Any]) -> dict[str, Any]:
             "B": round(b_mean, 3),
             "L_std": round(l_std, 3),
         },
-        # Legacy-compatible fields used by previous templates and prompt code.
+        # Legacy-compatible fields
         "skin_L": round(l_mean, 3),
         "skin_A": round(a_mean, 3),
         "skin_B": round(b_mean, 3),

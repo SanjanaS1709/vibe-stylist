@@ -117,36 +117,28 @@ def _extract_json_object(text: str) -> dict[str, Any]:
         return json.loads(text[start : end + 1])
 
 
-def _normalize_palettes(payload: dict[str, Any]) -> list[dict[str, Any]]:
-    palettes = payload.get("palettes")
-    if not isinstance(palettes, list):
-        palettes = []
+def _normalize_palettes(payload: dict[str, Any]) -> dict[str, Any]:
+    palettes_raw = payload.get("palettes")
+    if not isinstance(palettes_raw, list):
+        palettes_raw = []
 
-    normalized: list[dict[str, Any]] = []
-    for palette in palettes[:3]:
-        if not isinstance(palette, dict):
-            continue
+    res = {}
+    categories = ["daily", "college", "evening"]
+    for i, palette in enumerate(palettes_raw[:3]):
+        cat = categories[i] if i < len(categories) else f"palette_{i}"
+        
         hex_map = palette.get("hex", {})
-        if not isinstance(hex_map, dict):
-            hex_map = {}
+        colors = [
+            {"name": palette.get("primary", "Primary"), "hex": hex_map.get("primary", "#000000")},
+            {"name": palette.get("secondary", "Secondary"), "hex": hex_map.get("secondary", "#000000")},
+            {"name": palette.get("accent", "Accent"), "hex": hex_map.get("accent", "#000000")}
+        ]
 
-        normalized.append(
-            {
-                "name": str(palette.get("name", "Untitled Palette")),
-                "primary": str(palette.get("primary", "N/A")),
-                "secondary": str(palette.get("secondary", "N/A")),
-                "accent": str(palette.get("accent", "N/A")),
-                "hex": {
-                    "primary": str(hex_map.get("primary", "")),
-                    "secondary": str(hex_map.get("secondary", "")),
-                    "accent": str(hex_map.get("accent", "")),
-                },
-                "campus_fit": str(palette.get("campus_fit", "")),
-                "affordability_tip": str(palette.get("affordability_tip", "")),
-                "why_it_works": str(palette.get("why_it_works", "")),
-            }
-        )
-    return normalized
+        res[cat] = {
+            "colors": colors,
+            "reasoning": palette.get("why_it_works", "")
+        }
+    return res
 
 
 def _normalize_style_guidance(payload: dict[str, Any]) -> dict[str, Any]:
@@ -154,53 +146,17 @@ def _normalize_style_guidance(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(style, dict):
         style = {}
 
-    dress_codes = style.get("dress_codes")
-    if not isinstance(dress_codes, list):
-        dress_codes = []
-
-    normalized_dress_codes: list[dict[str, str]] = []
-    for item in dress_codes[:4]:
-        if not isinstance(item, dict):
-            continue
-        normalized_dress_codes.append(
-            {
-                "code": str(item.get("code", "")),
-                "top": str(item.get("top", "")),
-                "bottom": str(item.get("bottom", "")),
-                "shoes": str(item.get("shoes", "")),
-                "why": str(item.get("why", "")),
-            }
-        )
-
-    hair = style.get("hairstyle", {})
-    if not isinstance(hair, dict):
-        hair = {}
-
-    accessories = style.get("accessories")
-    if not isinstance(accessories, list):
-        accessories = []
-
     return {
+        "overview": str(payload.get("summary", "Your custom style guidelines.")),
         "gender_alignment_note": str(style.get("gender_alignment_note", "")),
-        "dress_codes": normalized_dress_codes,
-        "hairstyle": {
-            "recommendation": str(hair.get("recommendation", "")),
-            "maintenance_tip": str(hair.get("maintenance_tip", "")),
-        },
-        "accessories": [str(item) for item in accessories],
+        "accessories": style.get("accessories", [])
     }
 
 
 def _normalize_response(payload: dict[str, Any]) -> dict[str, Any]:
-    notes = payload.get("styling_notes")
-    if not isinstance(notes, list):
-        notes = []
-
     return {
-        "summary": str(payload.get("summary", "")),
         "palettes": _normalize_palettes(payload),
         "style_guidance": _normalize_style_guidance(payload),
-        "styling_notes": [str(note) for note in notes],
     }
 
 

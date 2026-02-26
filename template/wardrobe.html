@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeStylist - Wardrobe</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    {% set active_page = 'wardrobe' %}
+    {% include 'menu.html' %}
+
+    <section class="container">
+        <div class="header">
+            <div>
+                <h1>My Wardrobe</h1>
+                <p>Your curated collection ✨</p>
+            </div>
+            <button class="add-btn" onclick="openUploadModal()">+ Add Item</button>
+        </div>
+
+        <div class="grid" id="wardrobe-grid">
+            {% if items %}
+            {% for item in items %}
+            <div class="card"
+                onclick="viewDetail('{{ item.image_url }}', '{{ item.item_type }}', '{{ item.dominant_color }}', '{{ item.style_tag }}')">
+                <div class="card-img-container">
+                    <img src="{{ item.image_url }}" alt="{{ item.item_type }}">
+                </div>
+                <div class="card-content">
+                    <span class="count">{{ item.dominant_color }}</span>
+                    <h3>{{ item.item_type | capitalize }}</h3>
+                    <p style="opacity: 0.6; font-size: 12px; margin-top: 5px;">{{ item.style_tag }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <p>Your wardrobe is empty. Add your first piece! 👗</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- UPLOAD MODAL -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('uploadModal')">&times;</span>
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Add New Piece</h2>
+
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label>Dress Category</label>
+                    <select id="itemType" name="item_type" class="modal-select">
+                        {% if user_gender == 'Male' %}
+                        <option value="shirt">Shirt</option>
+                        <option value="pant">Pant / Trouser</option>
+                        <option value="kurta">Kurta</option>
+                        <option value="suit">Suit / Blazer</option>
+                        <option value="shoes">Shoes</option>
+                        <option value="accessory">Accessory</option>
+                        {% else %}
+                        <option value="top">Top / Blouse</option>
+                        <option value="pant">Pant / Trouser</option>
+                        <option value="kurti">Kurti / Kurta</option>
+                        <option value="saree">Saree</option>
+                        <option value="dress">One-piece Dress</option>
+                        <option value="shoes">Shoes</option>
+                        <option value="accessory">Accessory</option>
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="upload-area" id="dropZone" onclick="document.getElementById('file-upload').click()">
+                    <div id="upload-status-text">Click to upload photo<br><small>AI will remove the background
+                            automatically ✨</small></div>
+                    <input type="file" id="file-upload" style="display: none;" accept="image/*"
+                        onchange="handleFile(this)">
+                </div>
+
+                <button type="button" class="add-btn" style="width: 100%; margin-top: 20px;" onclick="uploadItem()">Save
+                    to Wardrobe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DETAIL MODAL -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <span class="close" onclick="closeModal('detailModal')">&times;</span>
+            <img id="detailImg" src=""
+                style="width: 100%; border-radius: 15px; margin-bottom: 20px; background: rgba(255,255,255,0.05);">
+            <h2 id="detailTitle" style="color: var(--gold);"></h2>
+            <p id="detailColor" style="opacity: 0.8; margin: 10px 0;"></p>
+            <p id="detailTag" style="font-style: italic; opacity: 0.6;"></p>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loader"></div>
+        <p>AI is removing background... ✨</p>
+    </div>
+
+    <style>
+        .card-img-container {
+            height: 250px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-img-container img {
+            max-height: 90%;
+            max-width: 90%;
+            object-fit: contain;
+            transition: transform 0.5s;
+        }
+
+        .card:hover .card-img-container img {
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+            opacity: 0.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--deep);
+            margin: 10% auto;
+            padding: 40px;
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gold);
+        }
+
+        .modal-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(43, 13, 13, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            color: white;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+
+        .modal-select option {
+            background-color: #2b0d0d;
+            color: white;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(212, 175, 55, 0.5);
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader {
+            border: 4px solid rgba(212, 175, 55, 0.1);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <script>
+        let selectedFile = null;
+
+        function openUploadModal() { document.getElementById('uploadModal').style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function handleFile(input) {
+            if (input.files && input.files[0]) {
+                selectedFile = input.files[0];
+                document.getElementById('upload-status-text').innerHTML = `Selected: ${selectedFile.name} ✅`;
+            }
+        }
+
+        async function uploadItem() {
+            if (!selectedFile) { alert("Please choose a photo first!"); return; }
+
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+            formData.append('item_type', document.getElementById('itemType').value);
+
+            try {
+                const res = await fetch('{{ url_for("wardrobe.upload_item") }}', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Upload failed. Check console.");
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        function viewDetail(url, type, color, tag) {
+            document.getElementById('detailImg').src = url;
+            document.getElementById('detailTitle').innerText = type.charAt(0).toUpperCase() + type.slice(1);
+            document.getElementById('detailColor').innerText = "Color: " + color;
+            document.getElementById('detailTag').innerText = "#" + tag;
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        document.addEventListener("mousemove", function (e) {
+            const sparkle = document.createElement("div");
+            sparkle.classList.add("sparkle");
+            sparkle.innerHTML = "✨";
+            sparkle.style.left = e.pageX + "px";
+            sparkle.style.top = e.pageY + "px";
+            document.body.appendChild(sparkle);
+            setTimeout(() => { sparkle.remove(); }, 800);
+        });
+    </script>
+
+</body>
+
+</html>

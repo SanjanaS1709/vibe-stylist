@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeStylist - Assembly Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --royal-red: #5a0f14;
+            --deep: #2b0d0d;
+            --gold: #d4af37;
+            --soft-gold: #f6e27a;
+            --text: #f8f6f2;
+            --premium-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 3-Step Wizard Control */
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* HEADER */
+        h1.main-heading {
+            text-align: center;
+            font-size: 48px;
+            margin: 40px 0;
+            background: linear-gradient(to right, var(--gold), var(--soft-gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* CONFIG PANELS */
+        .main-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding: 0 5%;
+            gap: 40px;
+        }
+
+        .side-panel {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        h2.panel-title {
+            color: var(--soft-gold);
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        /* VIBE SELECTOR (RESTORED) */
+        .vibe-slider {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .vibe-card {
+            width: 250px;
+            height: 320px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid var(--gold);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            position: absolute;
+            transition: 0.5s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .vibe-card.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .vibe-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vibe-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            color: var(--gold);
+            font-weight: 800;
+            font-size: 24px;
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 10;
+            transition: 0.3s;
+        }
+
+        .nav-arrow:hover {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        .arrow-left {
+            left: 10px;
+        }
+
+        .arrow-right {
+            right: 10px;
+        }
+
+        /* AVATAR/CHATBOT Persona */
+        .avatar-display {
+            width: 220px;
+            height: 300px;
+            border-radius: 20px;
+            border: 1px solid var(--gold);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .avatar-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .persona-btn {
+            padding: 10px 30px;
+            border-radius: 30px;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .persona-btn.active {
+            background: var(--gold);
+            color: black;
+        }
+
+        /* SOURCING TOGGLE */
+        .toggle-group {
+            display: flex;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 50px;
+            padding: 5px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .toggle-option {
+            flex: 1;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .toggle-option.active {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* ITEM SELECTION (Step 2) */
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .select-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .select-card:hover {
+            border-color: var(--gold);
+        }
+
+        .select-card.selected {
+            border: 3px solid var(--gold);
+            transform: scale(1.05);
+        }
+
+        .select-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .select-card .check {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gold);
+            color: black;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .select-card.selected .check {
+            display: flex;
+        }
+
+        .fallback-container {
+            text-align: center;
+            padding: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 30px;
+            border: 1px dashed var(--gold);
+        }
+
+        /* ASSEMBLY ROOM (Step 3) */
+        .assembly-container {
+            display: flex;
+            gap: 30px;
+            width: 90%;
+            margin: 20px auto;
+            min-height: 70vh;
+        }
+
+        .outfit-canvas {
+            flex: 1.5;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            overflow-y: auto;
+        }
+
+        .chat-panel {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .chat-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .msg {
+            max-width: 85%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .msg.ai {
+            background: rgba(255, 255, 255, 0.05);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .msg.user {
+            background: var(--gold);
+            color: black;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            font-weight: 600;
+        }
+
+        .chat-input {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--gold);
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: white;
+            outline: none;
+        }
+
+        .chat-input button {
+            background: var(--gold);
+            color: black;
+            border: none;
+            border-radius: 25px;
+            padding: 0 25px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn-gold {
+            padding: 15px 50px;
+            border-radius: 40px;
+            background: linear-gradient(45deg, var(--gold), #b8860b);
+            color: black;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 20px;
+            animation: fadeUp 0.8s linear forwards;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% set active_page = 'outfit' %}
+    {% include 'menu.html' %}
+
+    <div class="wizard-container">
+
+        <!-- STEP 1: CONFIG (RESTORED UI) -->
+        <div class="wizard-step active" id="step-1">
+            <h1 class="main-heading">Choose Your Session</h1>
+
+            <div class="main-container">
+                <!-- VIBE SELECTOR -->
+                <div class="side-panel">
+                    <h2 class="panel-title">Your Vibe</h2>
+                    <div class="vibe-slider">
+                        <div class="nav-arrow arrow-left" onclick="changeVibe(-1)">&#10094;</div>
+                        <div class="nav-arrow arrow-right" onclick="changeVibe(1)">&#10095;</div>
+
+                        <div class="vibe-card active" id="vibe-0">
+                            <img src="{{ url_for('static', filename='images/ava1.jpeg') }}" alt="Baddie">
+                            <div class="vibe-info">BADDIE</div>
+                        </div>
+                        <div class="vibe-card" id="vibe-1">
+                            <img src="{{ url_for('static', filename='images/ava2.jpeg') }}" alt="Fusion">
+                            <div class="vibe-info">FUSION</div>
+                        </div>
+                        <div class="vibe-card" id="vibe-2">
+                            <img src="{{ url_for('static', filename='images/fit2.jpeg') }}" alt="Freak">
+                            <div class="vibe-info">FREAK</div>
+                        </div>
+                        <div class="vibe-card" id="vibe-3">
+                            <img src="{{ url_for('static', filename='images/ava3.jpeg') }}" alt="Minimalist">
+                            <div class="vibe-info">MINIMALIST</div>
+                        </div>
+                    </div>
+
+                    <p style="color: var(--soft-gold); font-weight: 600; margin-top: 10px;">Sourcing Mode</p>
+                    <div class="toggle-group" id="sourcing-toggle">
+                        <div class="toggle-option active" onclick="setSourcing('wardrobe')">Only My Wardrobe</div>
+                        <div class="toggle-option" onclick="setSourcing('hybrid')">Hybrid (Suggest More)</div>
+                    </div>
+                </div>
+
+                <!-- ASSISTANT SELECTOR -->
+                <div class="side-panel">
+                    <h2 class="panel-title">Your Assistant</h2>
+                    <div class="avatar-display">
+                        <img id="assistant-img" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300"
+                            alt="Assistant">
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <button class="persona-btn active" id="btn-sia" onclick="setAssistant('female')">Sia</button>
+                        <button class="persona-btn" id="btn-leo" onclick="setAssistant('male')">Leo</button>
+                    </div>
+                    <p id="assistant-desc" style="font-size: 13px; opacity: 0.7; max-width: 300px;">Sia is sophisticated
+                        and elegant, focusing on high-fashion silhouettes and luxury details.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn-gold" onclick="startSelection()">LET'S GO ✨</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: ITERATIVE (SELECTOR) -->
+        <div class="wizard-step" id="step-2">
+            <h1 class="main-heading" id="category-title">Choose Your Tops</h1>
+            <div style="padding: 0 8%;">
+                <div id="item-grid" class="item-grid">
+                    <!-- Items or Fallback here -->
+                </div>
+                <div id="fallback-ui" class="fallback-container" style="display: none;">
+                    <h2 style="color: var(--gold); margin-bottom: 20px;">No matching items in your wardrobe!</h2>
+                    <p style="margin-bottom: 30px; opacity: 0.8;">You haven't added any <span
+                            id="fallback-cat-name">tops</span> to your wardrobe yet. Add some to get personalized
+                        pairings.</p>
+                    <button class="btn-gold" onclick="window.location.href='/wardrobe'">Add to Wardrobe 👗</button>
+                    <p style="margin-top: 20px; font-size: 12px; opacity: 0.5;">Or change source to 'Hybrid' in the
+                        first step.</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 50px;">
+                <button class="btn-gold" id="next-cat-btn" onclick="nextCategory()">NEXT CATEGORY ➔</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: ASSEMBLY -->
+        <div class="wizard-step" id="step-3">
+            <h1 class="main-heading">The Assembly Room</h1>
+            <div class="assembly-container">
+                <div class="outfit-canvas">
+                    <h3
+                        style="color: var(--gold); margin-bottom: 25px; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px;">
+                        Selected Components</h3>
+                    <div id="assembly-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <!-- selected items summary -->
+                    </div>
+                </div>
+
+                <div class="chat-panel">
+                    <div class="chat-header">
+                        <img id="chat-avatar" src="" alt="Assistant">
+                        <div>
+                            <h4 id="chat-name">Assistant</h4>
+                            <p style="font-size: 10px; opacity: 0.6;">Smart Stylist AI</p>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages -->
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chat-input" placeholder="Ask for advice..."
+                            onkeypress="if(event.key==='Enter') sendChatMessage()">
+                        <button onclick="sendChatMessage()">SEND</button>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn-gold" onclick="window.location.href='/dashboard'">SAVE LOOK & EXIT ✅</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="loading-overlay" id="loading">
+        <div style="font-size: 24px; color: var(--gold); font-weight: 800;">✨ STYLING...</div>
+    </div>
+
+    <script>
+        // SPARKLE SCRIPT
+        document.addEventListener("mousemove", (e) => {
+            const s = document.createElement("div"); s.className = "sparkle"; s.innerHTML = "✨";
+            s.style.left = e.pageX + "px"; s.style.top = e.pageY + "px"; document.body.appendChild(s);
+            setTimeout(() => s.remove(), 800);
+        });
+
+        // STATE
+        let activeVibe = 'BADDIE';
+        let activeSourcing = 'wardrobe';
+        let activeAssistant = 'female';
+        let categories = ['top', 'pant', 'shoes', 'accessory'];
+        let currentIdx = 0;
+        let selections = { top: [], pant: [], shoes: [], accessory: [] };
+
+        const personas = {
+            female: { name: 'Sia', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300', desc: "Sia is sophisticated and elegant, focusing on high-fashion silhouettes and luxury details." },
+            male: { name: 'Leo', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300', desc: "Leo focuses on structure, bold statements, and sharp urban sophistication for the modern man." }
+        };
+
+        const vibeNames = ["BADDIE", "FUSION", "FREAK", "MINIMALIST"];
+        let v_idx = 0;
+        function changeVibe(d) {
+            document.getElementById(`vibe-${v_idx}`).classList.remove('active');
+            v_idx = (v_idx + d + 4) % 4;
+            document.getElementById(`vibe-${v_idx}`).classList.add('active');
+            activeVibe = vibeNames[v_idx];
+        }
+
+        function setSourcing(m) {
+            activeSourcing = m;
+            document.querySelectorAll('#sourcing-toggle .toggle-option').forEach(o => o.classList.remove('active'));
+            if (m === 'wardrobe') document.querySelectorAll('#sourcing-toggle .toggle-option')[0].classList.add('active');
+            else document.querySelectorAll('#sourcing-toggle .toggle-option')[1].classList.add('active');
+        }
+
+        function setAssistant(p) {
+            activeAssistant = p;
+            document.getElementById('btn-sia').classList.toggle('active', p === 'female');
+            document.getElementById('btn-leo').classList.toggle('active', p === 'male');
+            document.getElementById('assistant-img').src = personas[p].img;
+            document.getElementById('assistant-desc').innerText = personas[p].desc;
+        }
+
+        async function startSelection() {
+            document.getElementById('step-1').classList.remove('active');
+            document.getElementById('step-2').classList.add('active');
+            await loadCategory();
+        }
+
+        async function loadCategory() {
+            const cat = categories[currentIdx];
+            document.getElementById('category-title').innerText = `Choose Your ${cat.charAt(0).toUpperCase() + cat.slice(1)}s`;
+            const grid = document.getElementById('item-grid');
+            const fallback = document.getElementById('fallback-ui');
+            grid.innerHTML = ''; grid.style.display = 'grid'; fallback.style.display = 'none';
+
+            document.getElementById('loading').style.display = 'flex';
+            try {
+                const res = await fetch('/get-category-options', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ category: cat, vibe: activeVibe, sourcing: activeSourcing })
+                });
+                const data = await res.json();
+
+                if (data.options.length === 0 && activeSourcing === 'wardrobe') {
+                    grid.style.display = 'none';
+                    fallback.style.display = 'block';
+                    document.getElementById('fallback-cat-name').innerText = cat + "s";
+                } else {
+                    data.options.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'select-card';
+                        card.onclick = () => toggleSelect(item, card);
+
+                        let shopLinks = '';
+                        if (item.source === 'ecommerce') {
+                            shopLinks = `
+                                <div style="padding: 10px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; gap: 5px;">
+                                    <p style="font-size: 9px; color: var(--gold); font-weight: 700;">BUY THIS PRODUCT:</p>
+                                    <a href="${item.myntra}" target="_blank" style="color: #ff3f6c; font-size: 11px; text-decoration: none; font-weight: 800;">Myntra ➔</a>
+                                    <a href="${item.amazon}" target="_blank" style="color: #ff9900; font-size: 11px; text-decoration: none; font-weight: 800;">Amazon ➔</a>
+                                </div>
+                            `;
+                        }
+
+                        card.innerHTML = `
+                            <img src="${item.image_url}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';">
+                            <div class="check">✓</div>
+                            <div style="padding: 15px;">
+                                <div style="font-size: 13px; font-weight: 700; color: var(--gold);">${item.name}</div>
+                                <div style="font-size: 10px; opacity: 0.6; margin-top: 5px;">${item.source === 'wardrobe' ? '🏡 Local Wardrobe' : '🛒 Online Selection'}</div>
+                            </div>
+                            ${shopLinks}
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
+            } finally { document.getElementById('loading').style.display = 'none'; }
+        }
+
+        function toggleSelect(item, el) {
+            const cat = categories[currentIdx];
+            const i = selections[cat].findIndex(x => x.name === item.name);
+            if (i > -1) { selections[cat].splice(i, 1); el.classList.remove('selected'); }
+            else { selections[cat].push(item); el.classList.add('selected'); }
+        }
+
+        async function nextCategory() {
+            if (selections[categories[currentIdx]].length === 0 && activeSourcing !== 'wardrobe') {
+                alert("Please select at least one item!"); return;
+            }
+            currentIdx++;
+            if (currentIdx < categories.length) {
+                await loadCategory();
+                if (currentIdx === categories.length - 1) document.getElementById('next-cat-btn').innerText = "FINALIZE LOOK ✨";
+            } else {
+                showAssembly();
+            }
+        }
+
+        function showAssembly() {
+            document.getElementById('step-2').classList.remove('active');
+            document.getElementById('step-3').classList.add('active');
+
+            const p = personas[activeAssistant];
+            document.getElementById('chat-avatar').src = p.img;
+            document.getElementById('chat-name').innerText = p.name;
+            document.getElementById('chat-messages').innerHTML = `<div class="msg ai">I am ${p.name}. I've reviewed your selections. A very ${activeVibe} choice! How can I help you style this further?</div>`;
+
+            const g = document.getElementById('assembly-grid'); g.innerHTML = '';
+            for (let c in selections) {
+                selections[c].forEach(item => {
+                    const dv = document.createElement('div');
+                    dv.style.cssText = "background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(212,175,55,0.1); overflow: hidden;";
+                    dv.innerHTML = `
+                        <img src="${item.image_url}" style="width:100%; height:150px; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';">
+                        <div style="padding: 10px; font-size: 11px; font-weight: 700; color: var(--gold);">${c.toUpperCase()}: ${item.name}</div>
+                    `;
+                    g.appendChild(dv);
+                });
+            }
+        }
+
+        async function sendChatMessage() {
+            const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return;
+            addMsg('user', t); i.value = '';
+            try {
+                const res = await fetch('/chatbot-interaction', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: t, persona: activeAssistant, outfit_context: selections })
+                });
+                const d = await res.json(); addMsg('ai', d.response);
+            } catch (e) { addMsg('ai', "I'm having trouble thinking, but you look great!"); }
+        }
+        function addMsg(type, text) {
+            const d = document.createElement('div'); d.className = `msg ${type}`; d.innerText = text;
+            const m = document.getElementById('chat-messages'); m.appendChild(d); m.scrollTop = m.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>

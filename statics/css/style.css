@@ -1,0 +1,342 @@
+/* =========================
+   ROYAL THEME VARIABLES
+========================= */
+
+:root {
+    --royal-red: #5a0f14;
+    --deep-brown: #2b0d0d;
+    --gold: #d4af37;
+    --soft-gold: #f6e27a;
+    --card: #3a1212;
+    --text: #f8f6f2;
+}
+
+/* =========================
+   BODY
+========================= */
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: linear-gradient(90deg, #4a0c11, #2b0d0d);
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Logo */
+.logo {
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+}
+
+/* Remove default list styling */
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+/* Remove bullets completely */
+.nav-links li {
+    list-style: none;
+}
+
+/* Link styling */
+.nav-links a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    position: relative;
+    transition: 0.3s;
+}
+
+/* Hover effect */
+.nav-links a:hover {
+    color: var(--soft-gold);
+}
+
+/* Active page underline */
+.nav-links .active a::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: var(--gold);
+    bottom: -8px;
+    left: 0;
+    box-shadow: 0 0 10px var(--gold);
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    padding: 60px;
+}
+
+/* =========================
+   HEADER (Title + Button)
+========================= */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(to right, var(--gold), var(--soft-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.header p {
+    opacity: 0.8;
+    margin-top: 10px;
+}
+
+/* =========================
+   ADD BUTTON (RIGHT SIDE)
+========================= */
+
+.add-btn {
+    background: linear-gradient(45deg, var(--gold), #b8860b);
+    color: #000;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 40px rgba(212, 175, 55, 1);
+}
+
+/* =========================
+   GRID
+========================= */
+
+.grid {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 35px;
+}
+
+/* =========================
+   CARD DESIGN
+========================= */
+
+.card {
+    background: linear-gradient(145deg, #4a0c11, #2b0d0d);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.card img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    filter: brightness(0.95) contrast(1.05);
+    transition: 0.4s;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.card h3 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.count {
+    background: linear-gradient(45deg, var(--gold), #b8860b);
+    color: #000;
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+    float: right;
+    font-weight: 700;
+}
+
+/* =========================
+   HOVER EFFECTS
+========================= */
+
+.card:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 25px 70px rgba(212, 175, 55, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.6);
+}
+
+.card:hover img {
+    transform: scale(1.05);
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+/* =========================
+   SPARKLE CURSOR
+========================= */
+
+.sparkle {
+    position: fixed;
+    font-size: 18px;
+    pointer-events: none;
+    animation: sparkleFade 0.8s linear forwards;
+}
+
+@keyframes sparkleFade {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-15px) scale(1.8);
+    }
+}
+
+/* =========================
+   HOME HERO SECTION
+========================= */
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px 60px;
+    min-height: 90vh;
+}
+
+.hero-left {
+    max-width: 600px;
+}
+
+.trending {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold);
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.hero h1 {
+    font-size: 70px;
+    line-height: 1.1;
+    font-weight: 800;
+    margin: 0;
+}
+
+.gold-text {
+    background: linear-gradient(to right, var(--gold), var(--soft-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    margin-top: 30px;
+    font-size: 18px;
+    opacity: 0.85;
+    max-width: 550px;
+}
+
+.hero-buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 20px;
+}
+
+/* =========================
+   HERO SECTION FIXED GRID
+========================= */
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px 60px;
+    min-height: 90vh;
+}
+
+.hero-left {
+    max-width: 600px;
+}
+
+.hero-right-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 250px);
+    grid-template-rows: repeat(2, 250px);
+    gap: 25px;
+}
+
+.hero-right-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    transition: 0.4s;
+}
+
+.hero-right-grid img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 30px 70px rgba(212, 175, 55, 0.5);
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}

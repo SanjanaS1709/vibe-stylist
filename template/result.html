@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeStylist - Your Style Breakdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --royal-red: #5a0f14;
+            --deep: #2b0d0d;
+            --gold: #d4af37;
+            --soft-gold: #f6e27a;
+            --text: #f8f6f2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 60px;
+            background: linear-gradient(90deg, #4a0c11, #2b0d0d);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--gold);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(to right, var(--gold), var(--soft-gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            margin: 30px 0 15px;
+            color: var(--gold);
+        }
+
+        .profile-card {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 40px;
+        }
+
+        .color-box {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .palette-card {
+            background: linear-gradient(145deg, #4a0c11, #2b0d0d);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .palette-title {
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--soft-gold);
+            margin-bottom: 15px;
+        }
+
+        .swatch-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .shopping-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .shopping-list li {
+            margin-bottom: 10px;
+        }
+
+        .shopping-list a {
+            color: var(--gold);
+            text-decoration: none;
+            display: block;
+            border: 1px solid var(--gold);
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .shopping-list a:hover {
+            background: var(--gold);
+            color: black;
+            font-weight: bold;
+        }
+
+        .action-btns {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--gold), #b8860b);
+            color: black;
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+        }
+    </style>
+</head>
+
+<body>
+    {% set active_page = 'skin' %}
+    {% include 'menu.html' %}
+
+    <div class="container">
+        <h1>Your Vibe Revealed</h1>
+
+        <div class="profile-card">
+            <div>
+                <h3>Analysis Results</h3>
+                <p><strong>Season:</strong> {{ profile.season }}</p>
+                <p><strong>Tone:</strong> {{ profile.tone_score }}</p>
+                <p><strong>Occasion:</strong> {{ context.occasion }}</p>
+            </div>
+            <div>
+                <p>{{ style_guidance.overview }}</p>
+            </div>
+        </div>
+
+        <h2>Curated Palettes</h2>
+        <div class="palette-grid">
+            {% for palette_type, data in palettes.items() %}
+            {% if palette_type != 'style_guidance' %}
+            <div class="palette-card">
+                <div class="palette-title">{{ palette_type|capitalize }} Palette</div>
+                {% for color in data.colors %}
+                <div class="swatch-item">
+                    <span class="color-box" style="background-color: {{ color.hex or '#000' }}"></span>
+                    <span>{{ color.name }} ({{ color.hex }})</span>
+                </div>
+                {% endfor %}
+                <p style="margin-top:15px; font-size: 0.9em; opacity: 0.8;">{{ data.reasoning }}</p>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if shopping_links %}
+        <h2>Shop The Look</h2>
+        <div class="palette-grid">
+            {% for platform, links in shopping_links.items() %}
+            <div class="palette-card">
+                <div class="palette-title">{{ platform|capitalize }}</div>
+                <ul class="shopping-list">
+                    {% for link in links %}
+                    <li><a href="{{ link.url }}" target="_blank">View {{ link.label }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="action-btns">
+            <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Try Another Look</a>
+            <a href="{{ url_for('wardrobe.wardrobe') }}" class="btn btn-primary">Save to Wardrobe</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

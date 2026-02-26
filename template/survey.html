@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeStylist - Style Survey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --royal-red: #5a0f14;
+            --deep: #2b0d0d;
+            --gold: #d4af37;
+            --soft-gold: #f6e27a;
+            --text: #f8f6f2;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            color: var(--text);
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .survey-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            padding: 50px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--soft-gold);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            background: rgba(43, 13, 13, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            position: relative;
+        }
+
+        .option-card:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .option-card.selected {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .option-card input {
+            display: none;
+        }
+
+        .nav-btns {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+        }
+
+        .btn-next {
+            background: linear-gradient(45deg, var(--gold), #b8860b);
+            color: black;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--gold);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            width: 25%;
+            transition: 0.5s ease;
+            box-shadow: 0 0 10px var(--gold);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="survey-container">
+        <h1>Style Discovery</h1>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <form id="styleSurvey" action="{{ url_for('survey.submit_survey') }}" method="POST">
+            <!-- STEP 1: Main Vibe -->
+            <div class="step active" id="step1">
+                <div class="question">1. Which vibe resonates with you most today?</div>
+                <div class="options-grid">
+                    <label class="option-card">
+                        <input type="radio" name="vibe" value="BADDIE" required> BADDIE (Bold & Edgy)
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="vibe" value="MINIMALIST"> MINIMALIST (Clean & Simple)
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="vibe" value="FUSION"> FUSION (Desi-Modern Mix)
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="vibe" value="CHIC"> CHIC (Elegant & Polished)
+                    </label>
+                </div>
+                <div class="nav-btns" style="justify-content: flex-end;">
+                    <button type="button" class="btn btn-next" onclick="nextStep(2)">Next</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Style Archetype -->
+            <div class="step" id="step2">
+                <div class="question">2. When it comes to trends, you prefer:</div>
+                <div class="options-grid">
+                    <label class="option-card">
+                        <input type="radio" name="archetype" value="Vintage"> Timeless & Vintage
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="archetype" value="Modern"> Ultra-Modern & Futuristic
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="archetype" value="Academic"> Dark Academia / Preppy
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="archetype" value="Street"> High-Street & Oversized
+                    </label>
+                </div>
+                <div class="nav-btns">
+                    <button type="button" class="btn" onclick="nextStep(1)">Back</button>
+                    <button type="button" class="btn btn-next" onclick="nextStep(3)">Next</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Lifestyle -->
+            <div class="step" id="step3">
+                <div class="question">3. What does your typical day look like?</div>
+                <div class="options-grid">
+                    <label class="option-card">
+                        <input type="radio" name="lifestyle" value="Classroom"> Classroom & Library
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="lifestyle" value="OnTheGo"> Constantly On The Go
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="lifestyle" value="Social"> Events & Socializing
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="lifestyle" value="Creative"> Creative Studio Work
+                    </label>
+                </div>
+                <div class="nav-btns">
+                    <button type="button" class="btn" onclick="nextStep(2)">Back</button>
+                    <button type="button" class="btn btn-next" onclick="nextStep(4)">Next</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Accessories -->
+            <div class="step" id="step4">
+                <div class="question">4. Final touch! Favorite accessory?</div>
+                <div class="options-grid">
+                    <label class="option-card">
+                        <input type="radio" name="accessory" value="GoldJewelry"> Statement Gold Jewelry
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="accessory" value="Watches"> Sleek Minimalist Watch
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="accessory" value="Sneakers"> High-Value Sneakers
+                    </label>
+                    <label class="option-card">
+                        <input type="radio" name="accessory" value="Bags"> Designer/Tote Bags
+                    </label>
+                </div>
+                <div class="nav-btns">
+                    <button type="button" class="btn" onclick="nextStep(3)">Back</button>
+                    <button type="submit" class="btn btn-next">Complete Analysis ✨</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function nextStep(stepNum) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${stepNum}`).classList.add('active');
+            document.getElementById('progress').style.width = (stepNum * 25) + '%';
+        }
+
+        // Add visual selection logic
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function () {
+                const radio = this.querySelector('input');
+                const name = radio.getAttribute('name');
+                document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+                    input.parentElement.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+    </script>
+
+</body>
+
+</html>

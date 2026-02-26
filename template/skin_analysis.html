@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeStylist - Styling Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --royal-red: #5a0f14;
+            --deep: #2b0d0d;
+            --gold: #d4af37;
+            --soft-gold: #f6e27a;
+            --text: #f8f6f2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 60px;
+            background: linear-gradient(90deg, #4a0c11, #2b0d0d);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--gold);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .nav-links .active a {
+            color: var(--gold);
+            position: relative;
+        }
+
+        .nav-links .active a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 100%;
+            height: 3px;
+            background: var(--gold);
+            box-shadow: 0 0 12px var(--gold);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(to right, var(--gold), var(--soft-gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--soft-gold);
+        }
+
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            background: rgba(43, 13, 13, 0.8);
+            color: white;
+            font-family: inherit;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(45deg, var(--gold), #b8860b);
+            color: black;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.8);
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid red;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffcccc;
+        }
+    </style>
+</head>
+
+<body>
+    {% set active_page = 'skin' %}
+    {% include 'menu.html' %}
+
+    <div class="container">
+        {% if user and user.skin_tone_result %}
+        <!-- REPORT VIEW -->
+        <h1>Knowledge Your DNA</h1>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="font-size: 24px; color: var(--gold); margin-bottom: 15px;">Your Results: <strong>{{
+                    user.skin_tone_result }}</strong></div>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 30px;">
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; flex: 1;">
+                    <label>Hair Color</label>
+                    <div style="font-size: 18px;">{{ user.hair_color or 'Not Set' }}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; flex: 1;">
+                    <label>Eye Color</label>
+                    <div style="font-size: 18px;">{{ user.eye_color or 'Not Set' }}</div>
+                </div>
+            </div>
+
+            <p style="opacity: 0.8; margin-bottom: 40px;">Based on your analysis, our AI will now prioritize palettes
+                that enhance your natural undertones.</p>
+
+            <a href="{{ url_for('skin.retake_analysis') }}" class="submit-btn"
+                style="text-decoration: none; display: block; width: 250px; margin: 0 auto;">Retake Test 🔄</a>
+        </div>
+
+        {% else %}
+        <!-- UPLOAD VIEW -->
+        <h1>Skin Tonality Analysis</h1>
+        <p style="text-align: center; margin-bottom: 30px; opacity: 0.8;">Upload a clear selfie in natural light for the
+            most accurate results.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="error"
+            style="background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--soft-gold);">{{ message
+            }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('skin.analyze_skin') }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Selfie (Face Only)</label>
+                <input type="file" name="file" id="file" accept="image/*" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hair_color">Hair Color</label>
+                <select name="hair_color" id="hair_color">
+                    <option value="Black">Black</option>
+                    <option value="Dark Brown">Dark Brown</option>
+                    <option value="Light Brown">Light Brown</option>
+                    <option value="Blonde">Blonde</option>
+                    <option value="Red">Red</option>
+                    <option value="Grey/White">Grey/White</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="eye_color">Eye Color</label>
+                <select name="eye_color" id="eye_color">
+                    <option value="Brown">Brown</option>
+                    <option value="Black">Black</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Green">Green</option>
+                    <option value="Hazel">Hazel</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn"
+                style="background: linear-gradient(45deg, var(--gold), #b8860b);">Analyze My DNA ✨</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

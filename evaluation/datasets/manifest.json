@@ -1,7 +1,0 @@
-{
-  "dataset_name": "vibe_stylist_local_baseline",
-  "version": "1.0.0",
-  "created_at_utc": "2026-02-26T08:15:02.477301+00:00",
-  "notes": "Fill labels with evaluation/label_manifest.py",
-  "samples": []
-}

@@ -1,71 +1,48 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vibe Stylist - Upload</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIBE STYLIST | Premium AI Fashion Experience</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
-  <h2>Vibe Stylist for College Students</h2>
+  <div class="scroll-progress" id="scrollIndicator"></div>
+  <div class="bg-pattern" style="background-image: url('{{ url_for('static', filename='images/kolam.png') }}');"></div>
 
-  {% if error %}
-  <p style="color: #c62828;">{{ error }}</p>
-  {% endif %}
+  <div class="container">
+    <header>
+      <div class="profile-pic-wrapper">
+        <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Profile" class="profile-pic">
+        <div class="level-badge">AI FASHION</div>
+      </div>
+      <div class="user-meta">
+        <h1>VIBE STYLIST</h1>
+        <p
+          style="font-family: var(--font-serif); color: var(--accent-gold); font-size: 1.2rem; font-style: italic; margin-top: 1rem;">
+          Your Premium AI Fashion Experience
+        </p>
+      </div>
+    </header>
 
-  <form method="POST" enctype="multipart/form-data">
-    <label for="image">Photo</label><br>
-    <input id="image" type="file" name="image" accept=".png,.jpg,.jpeg,.gif,.webp" required><br><br>
+    <section style="text-align: center; margin-top: 5rem;">
+      <div class="ornate-card" style="display: inline-block; padding: 4rem;">
+        <p style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 3rem;">Ready to discover your unique
+          vibe?</p>
+        <div style="display: flex; gap: 2rem; justify-content: center;">
+          <button onclick="location.href='{{ url_for('auth.login') }}'" class="btn-add"
+            style="padding: 1rem 3rem;">Login</button>
+          <button onclick="location.href='{{ url_for('auth.register') }}'" class="btn-add"
+            style="padding: 1rem 3rem; background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold);">Register</button>
+        </div>
+      </div>
+    </section>
+  </div>
 
-    <label for="gender">Gender (optional)</label><br>
-    <select id="gender" name="gender">
-      <option value="">Prefer not to say</option>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="non-binary">Non-binary</option>
-    </select><br><br>
-
-    <label for="mood">Mood (optional)</label><br>
-    <input id="mood" type="text" name="mood" placeholder="confident, soft, bold"><br><br>
-
-    <label for="occasion">Occasion (optional)</label><br>
-    <input id="occasion" type="text" name="occasion" placeholder="class day, fest night, campus interview"><br><br>
-
-    <label for="campus_style">Campus Style (optional)</label><br>
-    <select id="campus_style" name="campus_style">
-      <option value="">Not selected</option>
-      <option value="minimal">Minimal</option>
-      <option value="streetwear">Streetwear</option>
-      <option value="smart-casual">Smart-casual</option>
-      <option value="ethnic-fusion">Ethnic-fusion</option>
-    </select><br><br>
-
-    <label for="budget_tier">Budget Tier (optional)</label><br>
-    <select id="budget_tier" name="budget_tier">
-      <option value="">Not selected</option>
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
-    </select><br><br>
-
-    <label for="student_year">Student Year (optional)</label><br>
-    <select id="student_year" name="student_year">
-      <option value="">Not selected</option>
-      <option value="1st year">1st year</option>
-      <option value="2nd year">2nd year</option>
-      <option value="3rd year">3rd year</option>
-      <option value="4th year+">4th year+</option>
-    </select><br><br>
-
-    <label for="season">Season (optional)</label><br>
-    <select id="season" name="season">
-      <option value="">Not selected</option>
-      <option value="summer">Summer</option>
-      <option value="monsoon">Monsoon</option>
-      <option value="winter">Winter</option>
-      <option value="all-season">All-season</option>
-    </select><br><br>
-
-    <button type="submit">Analyze</button>
-  </form>
+  <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
+
 </html>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VibeStylist - Your Style Breakdown</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         :root {
             --royal-red: #5a0f14;
@@ -23,9 +24,25 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            background: radial-gradient(circle at center, #4b0c11 0%, #2b0d0d 70%, #1a0505 100%);
             color: var(--text);
             min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 10 L110 50 L150 60 L110 70 L100 110 L90 70 L50 60 L90 50 Z' fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.15'/%3E%3Cpath d='M100 30 L105 55 L130 60 L105 65 L100 90 L95 65 L70 60 L95 55 Z' fill='none' stroke='%23d4af37' stroke-width='0.3' opacity='0.1'/%3E%3Ccircle cx='100' cy='60' r='40' fill='none' stroke='%23d4af37' stroke-width='0.2' stroke-dasharray='2 2' opacity='0.1'/%3E%3Cpath d='M60 60 Q100 20 140 60 Q100 100 60 60' fill='none' stroke='%23d4af37' stroke-width='0.2' opacity='0.1'/%3E%3Cpath d='M100 20 Q140 60 100 100 Q60 60 100 20' fill='none' stroke='%23d4af37' stroke-width='0.2' opacity='0.1'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .navbar {
@@ -64,10 +81,12 @@
             max-width: 1000px;
             margin: 60px auto;
             padding: 40px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(43, 13, 13, 0.9);
+            border: 6px solid var(--gold);
+            outline: 3px solid rgba(246, 226, 122, 0.4);
             border-radius: 25px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.5);
         }
 
         h1 {

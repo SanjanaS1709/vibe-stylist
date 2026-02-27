@@ -16,23 +16,43 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            background: radial-gradient(circle at center, #4b0c11 0%, #2b0d0d 70%, #1a0505 100%);
             color: var(--text);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            height: 900px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='1.2' opacity='0.3'%3E%3Cpath d='M100 10 Q110 30 130 30 Q150 30 150 50 Q150 70 170 80 Q190 90 190 100 Q190 110 170 120 Q150 130 150 150 Q150 170 130 170 Q110 170 100 190 Q90 170 70 170 Q50 170 50 150 Q50 130 30 120 Q10 110 10 100 Q10 90 30 80 Q50 70 50 50 Q50 30 70 30 Q90 30 100 10' /%3E%3Ccircle cx='100' cy='100' r='6' fill='%23d4af37' /%3E%3Ccircle cx='100' cy='50' r='4' /%3E%3Ccircle cx='100' cy='150' r='4' /%3E%3Ccircle cx='50' cy='100' r='4' /%3E%3Ccircle cx='150' cy='100' r='4' /%3E%3Crect x='85' y='85' width='30' height='30' transform='rotate(45 100 100)' /%3E%3Cpath d='M60 60 L140 140 M140 60 L60 140' stroke-width='0.7' /%3E%3C/g%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .login-box {
-            width: 400px;
+            position: relative;
+            z-index: 1;
+            width: 450px;
             padding: 40px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(43, 13, 13, 0.9);
+            border: 6px solid var(--gold);
+            outline: 3px solid rgba(246, 226, 122, 0.4);
             border-radius: 25px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             text-align: center;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.5);
         }
 
         h1 {
@@ -45,7 +65,8 @@
             padding: 12px;
             margin-bottom: 20px;
             border-radius: 10px;
-            border: 1px solid rgba(212, 175, 55, 0.5);
+            border: 4px solid var(--gold);
+            outline: 2px solid rgba(246, 226, 122, 0.4);
             background: rgba(43, 13, 13, 0.8);
             color: white;
         }

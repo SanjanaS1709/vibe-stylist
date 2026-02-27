@@ -7,6 +7,7 @@
     <title>VibeStylist - Profile</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     <style>
         /* ================= ROOT ================= */
@@ -22,8 +23,25 @@
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            background: radial-gradient(circle at center, #4b0c11 0%, #2b0d0d 70%, #1a0505 100%);
             color: var(--text);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 10 L110 50 L150 60 L110 70 L100 110 L90 70 L50 60 L90 50 Z' fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.15'/%3E%3Cpath d='M100 30 L105 55 L130 60 L105 65 L100 90 L95 65 L70 60 L95 55 Z' fill='none' stroke='%23d4af37' stroke-width='0.3' opacity='0.1'/%3E%3Ccircle cx='100' cy='60' r='40' fill='none' stroke='%23d4af37' stroke-width='0.2' stroke-dasharray='2 2' opacity='0.1'/%3E%3Cpath d='M60 60 Q100 20 140 60 Q100 100 60 60' fill='none' stroke='%23d4af37' stroke-width='0.2' opacity='0.1'/%3E%3Cpath d='M100 20 Q140 60 100 100 Q60 60 100 20' fill='none' stroke='%23d4af37' stroke-width='0.2' opacity='0.1'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* ================= NAVBAR ================= */
@@ -119,9 +137,11 @@
             width: 85%;
             margin: auto;
             padding: 50px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(43, 13, 13, 0.9);
+            border: 6px solid var(--gold);
+            outline: 3px solid rgba(246, 226, 122, 0.4);
             border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.5);
         }
 
         /* ================= STYLE STATS ================= */
@@ -156,10 +176,20 @@
 
         .badges {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
             margin-top: 40px;
             flex-wrap: wrap;
-            gap: 30px;
+            gap: 40px;
+        }
+
+        .badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .badge-circle {
@@ -243,6 +273,28 @@
             border: 1px solid rgba(212, 175, 55, 0.3);
             padding: 15px;
             margin-top: 10px;
+            position: relative;
+        }
+
+        .remove-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .remove-btn:hover {
+            background: #ff4d4d;
+            color: white;
         }
 
         .challenge-complete {
@@ -298,20 +350,23 @@
     </div>
 
     <!-- STYLE BADGES -->
-    <!-- STYLE BADGES -->
     <div class="section-title">STYLE BADGES</div>
-    <div class="card-box badges">
+    <div class="card-box badges" id="badgeContainer">
         {% if badges %}
         {% for badge in badges %}
+        {% set icon_num = (loop.index0 % 3 + 1) %}
+        {% set badge_names = {1: 'Baddie', 2: 'Fusion Freak', 3: 'Minimalist'} %}
         <div class="badge">
             <div class="badge-circle">
-                <img src="{{ url_for('static', filename='images/award.png') }}" alt="{{ badge.badge_name }}">
+                <img src="{{ url_for('static', filename='images/ava' ~ icon_num ~ '.jpeg') }}"
+                    alt="{{ badge_names[icon_num] }}">
             </div>
-            <div>{{ badge.badge_name }}</div>
+            <div style="font-weight: 600; color: var(--gold); margin-top: 10px;">{{ badge_names[icon_num] }}</div>
         </div>
         {% endfor %}
         {% else %}
-        <p style="opacity: 0.5; text-align: center; width: 100%;">No badges earned yet. Keep styling!</p>
+        <p id="noBadgeMsg" style="opacity: 0.5; text-align: center; width: 100%;">No badges earned yet. Keep styling!
+        </p>
         {% endif %}
     </div>
     <!-- STYLE INSIGHTS + JOURNEY -->
@@ -356,7 +411,7 @@
 
     <div class="challenge-complete" id="completeBox">
         <h2>Challenge Complete</h2>
-        <p>Style Icon Unlocked ✨</p>
+        <p>New Ava Badge Unlocked ✨</p>
     </div>
 
     <script>
@@ -373,11 +428,13 @@
             item.className = "challenge-item";
 
             item.innerHTML = `
-        <label>
+        <div style="display: flex; align-items: center; gap: 10px;">
             <input type="checkbox" onchange="toggleComplete(this)">
             <span class="challenge-label">${text}</span>
-        </label>
-        <span>Reward: Style Icon ✨</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <span style="font-size: 13px; opacity: 0.7;">Reward: Ava Badge ✨</span>
+        </div>
     `;
 
             list.appendChild(item);
@@ -385,14 +442,64 @@
         }
 
         function toggleComplete(checkbox) {
-            const label = checkbox.parentElement.querySelector(".challenge-label");
+            const item = checkbox.closest(".challenge-item");
+            const label = item.querySelector(".challenge-label");
 
             if (checkbox.checked) {
                 label.style.textDecoration = "line-through";
+                label.style.opacity = "0.5";
                 showPopup();
+
+                // Add Badge
+                addBadgeToUI("Ava Badge");
+
+                // Add Remove Button if not exists
+                if (!item.querySelector('.remove-btn')) {
+                    const removeBtn = document.createElement("button");
+                    removeBtn.className = "remove-btn";
+                    removeBtn.innerHTML = "&times;";
+                    removeBtn.title = "Remove Challenge";
+                    removeBtn.onclick = function () {
+                        item.style.opacity = "0";
+                        setTimeout(() => item.remove(), 300);
+                    };
+                    item.appendChild(removeBtn);
+                }
             } else {
                 label.style.textDecoration = "none";
+                label.style.opacity = "1";
             }
+        }
+
+        const staticBase = "{{ url_for('static', filename='images/') }}";
+        let badgeCount = parseInt("{{ badges|length if badges else 0 }}");
+
+        function addBadgeToUI(name) {
+            const container = document.getElementById("badgeContainer");
+            const noMsg = document.getElementById("noBadgeMsg");
+            if (noMsg) noMsg.remove();
+
+            badgeCount++;
+            const iconIndex = (badgeCount - 1) % 3 + 1;
+
+            const badgeMap = {
+                1: 'Baddie',
+                2: 'Fusion Freak',
+                3: 'Minimalist'
+            };
+
+            const displayName = badgeMap[iconIndex];
+            const iconName = `ava${iconIndex}.jpeg`;
+
+            const badgeDiv = document.createElement("div");
+            badgeDiv.className = "badge";
+            badgeDiv.innerHTML = `
+                <div class="badge-circle">
+                    <img src="${staticBase}${iconName}" alt="${displayName}">
+                </div>
+                <div style="font-weight: 600; color: var(--gold); margin-top: 10px;">${displayName}</div>
+            `;
+            container.appendChild(badgeDiv);
         }
 
         function showPopup() {

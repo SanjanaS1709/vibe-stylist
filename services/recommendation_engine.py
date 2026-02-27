@@ -104,7 +104,10 @@ class RecommendationEngine:
         
         prompt = f"""
         Suggest 6 '{category}' items for a '{vibe}' vibe.
-        Sourcing preference: {sourcing}
+        
+        Strict Sourcing Preference: {sourcing}
+        - If sourcing is 'wardrobe', you MUST ONLY pick items from the 'User's Wardrobe Items' list. DO NOT provide ecommerce suggestions.
+        - If sourcing is 'hybrid', you MUST provide a mix of items from the 'User's Wardrobe Items' list AND new 'ecommerce' suggestions that complement them.
         
         User's Wardrobe Items: {json.dumps(relevant_wardrobe)}
         
@@ -126,6 +129,10 @@ class RecommendationEngine:
             data = json.loads(completion.choices[0].message.content)
             items = data.get('items', data.get('suggestions', data.get('options', [])))
             
+            # Post-filter to strictly enforce sourcing if AI failed to follow instructions
+            if sourcing == 'wardrobe':
+                items = [it for it in items if it.get('source') == 'wardrobe']
+            
             for item in items:
                 if item.get('source') == 'ecommerce':
                     # Use a reliable Unsplash Source URL with keywords and the random ID for uniqueness
@@ -140,6 +147,12 @@ class RecommendationEngine:
                         "myntra": shop['myntra_link'],
                         "flipkart": shop['flipkart_link']
                     })
+                elif item.get('source') == 'wardrobe' and not item.get('image_url'):
+                    # Fallback for wardrobe items if AI missed the image_url
+                    match = next((w for w in relevant_wardrobe if w['id'] == item.get('item_id')), None)
+                    if match:
+                        item['image_url'] = match['image_url']
+
             return items
         except Exception as e:
             print(f"Error getting category suggestions: {e}")

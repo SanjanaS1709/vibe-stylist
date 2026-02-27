@@ -3,11 +3,12 @@
 ========================= */
 
 :root {
-    --royal-red: #5a0f14;
-    --deep-brown: #2b0d0d;
+    --royal-red: #4b0c11;
+    --deep-wine: #2b0d0d;
+    --black-wine: #1a0505;
     --gold: #d4af37;
     --soft-gold: #f6e27a;
-    --card: #3a1212;
+    --card: rgba(58, 18, 18, 0.6);
     --text: #f8f6f2;
 }
 
@@ -18,9 +19,27 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+    background: radial-gradient(circle at center, var(--royal-red) 0%, var(--deep-wine) 70%, var(--black-wine) 100%);
     color: var(--text);
     overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 900px;
+    /* Intricate Kolam Design SVG */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='1' opacity='0.25'%3E%3Cpath d='M100 10 Q110 30 130 30 Q150 30 150 50 Q150 70 170 80 Q190 90 190 100 Q190 110 170 120 Q150 130 150 150 Q150 170 130 170 Q110 170 100 190 Q90 170 70 170 Q50 170 50 150 Q50 130 30 120 Q10 110 10 100 Q10 90 30 80 Q50 70 50 50 Q50 30 70 30 Q90 30 100 10' /%3E%3Ccircle cx='100' cy='100' r='5' fill='%23d4af37' /%3E%3Ccircle cx='100' cy='50' r='3' /%3E%3Ccircle cx='100' cy='150' r='3' /%3E%3Ccircle cx='50' cy='100' r='3' /%3E%3Ccircle cx='150' cy='100' r='3' /%3E%3Crect x='85' y='85' width='30' height='30' transform='rotate(45 100 100)' /%3E%3Cpath d='M60 60 L140 140 M140 60 L60 140' stroke-width='0.5' /%3E%3C/g%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* =========================
@@ -113,6 +132,7 @@ body {
     font-weight: 800;
     background: linear-gradient(to right, var(--gold), var(--soft-gold));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
 }
@@ -165,7 +185,15 @@ body {
     transition: all 0.4s ease;
     position: relative;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(212, 175, 55, 0.25);
+    border: 4px solid var(--gold);
+    outline: 2px solid rgba(246, 226, 122, 0.3);
+}
+
+input,
+select,
+textarea {
+    border: 3px solid var(--gold) !important;
+    outline: 1px solid rgba(246, 226, 122, 0.4);
 }
 
 .card img {
@@ -201,8 +229,8 @@ body {
 
 .card:hover {
     transform: translateY(-12px) scale(1.03);
-    box-shadow: 0 25px 70px rgba(212, 175, 55, 0.6);
-    border: 1px solid rgba(212, 175, 55, 0.6);
+    box-shadow: 0 25px 70px rgba(212, 175, 55, 0.6), 0 0 20px rgba(212, 175, 55, 0.2);
+    border: 1px solid var(--soft-gold);
 }
 
 .card:hover img {
@@ -282,6 +310,7 @@ body {
 .gold-text {
     background: linear-gradient(to right, var(--gold), var(--soft-gold));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -327,7 +356,7 @@ body {
     object-fit: cover;
     border-radius: 25px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(212, 175, 55, 0.3);
+    border: 5px solid var(--gold);
     transition: 0.4s;
 }
 

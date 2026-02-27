@@ -7,6 +7,7 @@
     <title>VibeStylist</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     <style>
         /* =========================
@@ -31,9 +32,26 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top right, #6b1016, #2b0d0d);
+            background: radial-gradient(circle at center, #4b0c11 0%, #2b0d0d 70%, #1a0505 100%);
             color: var(--text);
             overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            height: 900px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='1.2' opacity='0.3'%3E%3Cpath d='M100 10 Q110 30 130 30 Q150 30 150 50 Q150 70 170 80 Q190 90 190 100 Q190 110 170 120 Q150 130 150 150 Q150 170 130 170 Q110 170 100 190 Q90 170 70 170 Q50 170 50 150 Q50 130 30 120 Q10 110 10 100 Q10 90 30 80 Q50 70 50 50 Q50 30 70 30 Q90 30 100 10' /%3E%3Ccircle cx='100' cy='100' r='6' fill='%23d4af37' /%3E%3Ccircle cx='100' cy='50' r='4' /%3E%3Ccircle cx='100' cy='150' r='4' /%3E%3Ccircle cx='50' cy='100' r='4' /%3E%3Ccircle cx='150' cy='100' r='4' /%3E%3Crect x='85' y='85' width='30' height='30' transform='rotate(45 100 100)' /%3E%3Cpath d='M60 60 L140 140 M140 60 L60 140' stroke-width='0.7' /%3E%3C/g%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: -1;
+            pointer-events: none;
         }
 
         section {
@@ -229,8 +247,29 @@
         .marquee {
             overflow: hidden;
             white-space: nowrap;
-            background: #4a0c11;
+            background: rgba(74, 12, 17, 0.8);
             padding: 20px 0;
+            border-top: 2px solid var(--gold);
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+        }
+
+        .marquee::before,
+        .marquee::after {
+            content: "✨";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 20px;
+        }
+
+        .marquee::before {
+            left: 20px;
+        }
+
+        .marquee::after {
+            right: 20px;
         }
 
         .marquee-content {
@@ -268,7 +307,8 @@
             background: linear-gradient(145deg, #4a0c11, #2b0d0d);
             padding: 30px;
             border-radius: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            border: 4px solid var(--gold);
+            outline: 2px solid rgba(246, 226, 122, 0.4);
             transition: 0.4s;
         }
 
@@ -291,9 +331,22 @@
             gap: 60px;
         }
 
+        .swipe h1 {
+            font-size: 56px;
+            line-height: 1.2;
+        }
+
+        .swipe p {
+            font-size: 24px;
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+
         .swipe img {
             width: 320px;
             border-radius: 30px;
+            border: 5px solid var(--gold);
+            outline: 2px solid rgba(246, 226, 122, 0.4);
         }
 
         /* =========================
@@ -314,6 +367,8 @@
             background: #3a1212;
             padding: 30px;
             border-radius: 20px;
+            border: 3px solid var(--gold);
+            outline: 1px solid rgba(246, 226, 122, 0.3);
             transition: 0.4s;
         }
 

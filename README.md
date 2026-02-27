@@ -25,7 +25,11 @@ Powered by **Groq (Llama 3.3)**, the engine generates complete outfit logic by:
 
 ### 📊 3. Style Archetype & Skin Tone Analysis
 Personalization at its core. Through an interactive survey and AI analysis, Vibe Stylist determines:
+<<<<<<< HEAD
 *   **Your Archetype**: (e.g., Clean Girl, Old Money, Streetwear, Coquette, Dark Academia, Baddie, Fusion, Minimalist).
+=======
+*   **Your Archetype**: (e.g., Chic, Streetwear, Ethnic Modern, Minimalist).
+>>>>>>> 36bd05f7e43c52930e2b104d9282d0799d3e8ffa
 *   **Color Palette**: Recommends colors that complement your specific skin tone.
 
 ### 🎮 4. The Daily Swipe (Gamified Personalization)

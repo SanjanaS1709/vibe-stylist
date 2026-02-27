@@ -15,4 +15,3 @@ document.addEventListener("mousemove", function (e) {
         sparkle.remove();
     }, 800);
 });
-label.classList.add("completed");

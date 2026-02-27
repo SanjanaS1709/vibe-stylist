@@ -17,33 +17,29 @@
 
     <section class="container">
         <div class="header">
-            <div>
-                <h1>My Wardrobe</h1>
-                <p>Your curated collection ✨</p>
+            <div id="wardrobe-title-box">
+                <h1 style="color: var(--gold); font-size: 48px; font-weight: 800; margin-bottom: 10px;">My Wardrobe</h1>
+                <p style="opacity: 0.8; font-size: 18px;">Your curated collection ✨</p>
             </div>
-            <button class="add-btn" onclick="openUploadModal()">+ Add Item</button>
+            <div id="category-title-box" style="display: none; align-items: center; gap: 20px;">
+                <button class="back-btn" onclick="showCollections()">← Back</button>
+                <h1 id="current-category-name" style="margin: 0; color: var(--gold);">Category</h1>
+            </div>
+            <button class="add-btn iconic-glow" onclick="openUploadModal()">+ Add Outfit</button>
         </div>
 
-        <div class="grid" id="wardrobe-grid">
-            {% if items %}
-            {% for item in items %}
-            <div class="card"
-                onclick="viewDetail('{{ item.image_url }}', '{{ item.item_type }}', '{{ item.dominant_color }}', '{{ item.style_tag }}')">
-                <div class="card-img-container">
-                    <img src="{{ item.image_url }}" alt="{{ item.item_type }}">
-                </div>
-                <div class="card-content">
-                    <span class="count">{{ item.dominant_color }}</span>
-                    <h3>{{ item.item_type | capitalize }}</h3>
-                    <p style="opacity: 0.6; font-size: 12px; margin-top: 5px;">{{ item.style_tag }}</p>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="empty-state">
-                <p>Your wardrobe is empty. Add your first piece! 👗</p>
-            </div>
-            {% endif %}
+        <!-- CATEGORY FOLDERS VIEW -->
+        <div class="grid" id="category-grid">
+            <!-- Dynamically populated -->
+        </div>
+
+        <!-- ITEMS GRID VIEW (Hidden by default) -->
+        <div class="grid" id="items-grid" style="display: none;">
+            <!-- Dynamically populated -->
+        </div>
+
+        <div id="empty-wardrobe" style="display: none;" class="empty-state">
+            <p>Your wardrobe is empty. Add your first piece! 👗</p>
         </div>
     </section>
 
@@ -76,11 +72,12 @@
                     </select>
                 </div>
 
-                <div class="upload-area" id="dropZone" onclick="document.getElementById('file-upload').click()">
-                    <div id="upload-status-text">Click to upload photo<br><small>AI will remove the background
-                            automatically ✨</small></div>
-                    <input type="file" id="file-upload" style="display: none;" accept="image/*"
+                <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <div id="upload-status-text">Click to upload photo 📸</div>
+                    <input type="file" id="fileInput" name="image" style="display: none;" accept="image/*"
                         onchange="handleFile(this)">
+                    <img id="uploadPreview" src=""
+                        style="display: none; width: 100%; max-height: 200px; object-fit: contain; margin-top: 15px; border-radius: 10px;">
                 </div>
 
                 <button type="button" class="add-btn" style="width: 100%; margin-top: 20px;" onclick="uploadItem()">Save
@@ -94,7 +91,12 @@
         <div class="modal-content" style="max-width: 500px; text-align: center;">
             <span class="close" onclick="closeModal('detailModal')">&times;</span>
             <img id="detailImg" src=""
-                style="width: 100%; border-radius: 15px; margin-bottom: 20px; background: rgba(255,255,255,0.05);">
+                style="width: 100%; border-radius: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.05);">
+            <div style="margin-bottom: 20px;">
+                <a id="detailLink" href="" target="_blank"
+                    style="color: var(--gold); font-size: 12px; opacity: 0.6; text-decoration: underline;">View Original
+                    Image</a>
+            </div>
             <h2 id="detailTitle" style="color: var(--gold);"></h2>
             <p id="detailColor" style="opacity: 0.8; margin: 10px 0;"></p>
             <p id="detailTag" style="font-style: italic; opacity: 0.6;"></p>
@@ -108,6 +110,22 @@
     </div>
 
     <style>
+        .iconic-glow {
+            background: linear-gradient(45deg, var(--gold), #b8860b) !important;
+            color: black !important;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6) !important;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .iconic-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.9) !important;
+        }
+
         .card-img-container {
             height: 250px;
             overflow: hidden;
@@ -148,16 +166,14 @@
         }
 
         .modal-content {
-            background: rgba(43, 13, 13, 0.95);
+            background: var(--deep);
             margin: 10% auto;
             padding: 40px;
-            border: 6px solid var(--gold);
-            outline: 3px solid rgba(246, 226, 122, 0.4);
+            border: 1px solid var(--gold);
             border-radius: 20px;
             width: 90%;
             max-width: 400px;
             position: relative;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.5);
         }
 
         .close {
@@ -233,9 +249,242 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* FOLDER CARD STYLES */
+        .folder-card {
+            background: #1a0505;
+            border-radius: 20px;
+            height: 400px;
+            text-align: left;
+            border: 2px solid rgba(212, 175, 55, 0.1);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .folder-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .folder-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: 0.4s;
+        }
+
+        .folder-card:hover .folder-img {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .folder-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(26, 5, 5, 0.9);
+            padding: 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .folder-footer h3 {
+            color: white;
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .item-count-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--gold);
+            color: black;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            z-index: 5;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--gold);
+            color: black;
+        }
+
+        /* REMOVE BUTTON STYLES */
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 68, 68, 0.9);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .card:hover .remove-btn {
+            opacity: 1;
+        }
+
+        .remove-btn:hover {
+            background: #ff0000;
+            transform: scale(1.1);
+        }
     </style>
 
     <script>
+        const allItems = {{ items | tojson }};
+        const categories = {
+            'top': { name: 'Tops', image: '/statics/images/tops.jpeg' },
+            'pant': { name: 'Bottoms', image: '/statics/images/bottoms.jpeg' },
+            'kurti': { name: 'Kurtis', image: '/statics/images/blouses.jpeg' },
+            'kurta': { name: 'Kurtas', image: '/statics/images/sarees.jpeg' },
+            'blouse': { name: 'Blouses', image: '/statics/images/blouses.jpeg' },
+            'saree': { name: 'Sarees', image: '/statics/images/sarees.jpeg' },
+            'dress': { name: 'Dresses', image: '/statics/images/dresses.jpeg' },
+            'shoes': { name: 'Shoes', image: '/statics/images/shoes.jpeg' },
+            'accessory': { name: 'Accessories', image: '/statics/images/jewelleries.jpeg' },
+            'jewellery': { name: 'Jewelleries', image: '/statics/images/jewelleries.jpeg' }
+        };
+
+        function renderCategories() {
+            const grid = document.getElementById('category-grid');
+            grid.innerHTML = '';
+
+            const grouped = {};
+            allItems.forEach(item => {
+                const type = item.item_type.toLowerCase();
+                if (!grouped[type]) grouped[type] = [];
+                grouped[type].push(item);
+            });
+
+            const keys = Object.keys(grouped);
+            if (keys.length === 0) {
+                document.getElementById('empty-wardrobe').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('empty-wardrobe').style.display = 'none';
+            }
+
+            keys.forEach(type => {
+                const catInfo = categories[type] || { name: type, image: '/statics/images/tops.jpeg' };
+                const count = grouped[type].length;
+
+                const card = document.createElement('div');
+                card.className = 'folder-card';
+                card.onclick = () => showCategoryItems(type);
+                card.innerHTML = `
+                    <img src="${catInfo.image}" class="folder-img" alt="${catInfo.name}">
+                    <div class="item-count-badge">${count} Items</div>
+                    <div class="folder-footer">
+                        <h3>${catInfo.name}</h3>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showCategoryItems(type) {
+            const catInfo = categories[type] || { name: type };
+            document.getElementById('wardrobe-title-box').style.display = 'none';
+            document.getElementById('category-title-box').style.display = 'flex';
+            document.getElementById('current-category-name').innerText = catInfo.name;
+
+            document.getElementById('category-grid').style.display = 'none';
+            const itemGrid = document.getElementById('items-grid');
+            itemGrid.style.display = 'grid';
+            itemGrid.innerHTML = '';
+
+            const filtered = allItems.filter(i => i.item_type.toLowerCase() === type);
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => viewDetail(item.image_url, item.item_type, item.dominant_color, item.style_tag);
+                card.innerHTML = `
+                    <button class="remove-btn" onclick="removeItem('${item.id}', event)">✕</button>
+                    <div class="card-img-container">
+                        <img src="${item.image_url}" alt="${item.item_type}">
+                    </div>
+                    <div class="card-content">
+                        <span class="count">${item.dominant_color}</span>
+                        <h3>${item.item_type.charAt(0).toUpperCase() + item.item_type.slice(1)}</h3>
+                        <p style="opacity: 0.6; font-size: 12px; margin-top: 5px;">${item.style_tag}</p>
+                    </div>
+                `;
+                itemGrid.appendChild(card);
+            });
+        }
+
+        async function removeItem(itemId, event) {
+            event.stopPropagation();
+            if (!confirm("Are you sure you want to remove this item?")) return;
+
+            try {
+                const res = await fetch(`/remove-wardrobe-item/${itemId}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    // Update local list
+                    const index = allItems.findIndex(i => i.id === itemId);
+                    if (index > -1) {
+                        const type = allItems[index].item_type.toLowerCase();
+                        allItems.splice(index, 1);
+
+                        // Check if we should go back to collections or refresh current view
+                        const remaining = allItems.filter(i => i.item_type.toLowerCase() === type);
+                        if (remaining.length === 0) {
+                            renderCategories();
+                            showCollections();
+                        } else {
+                            renderCategories(); // Update counts
+                            showCategoryItems(type);
+                        }
+                    }
+                } else {
+                    alert(data.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Error removing item.");
+            }
+        }
+
+        function showCollections() {
+            document.getElementById('wardrobe-title-box').style.display = 'block';
+            document.getElementById('category-title-box').style.display = 'none';
+            document.getElementById('category-grid').style.display = 'grid';
+            document.getElementById('items-grid').style.display = 'none';
+        }
+
+        // Initialize
+        renderCategories();
+
         let selectedFile = null;
 
         function openUploadModal() { document.getElementById('uploadModal').style.display = 'block'; }
@@ -245,6 +494,14 @@
             if (input.files && input.files[0]) {
                 selectedFile = input.files[0];
                 document.getElementById('upload-status-text').innerHTML = `Selected: ${selectedFile.name} ✅`;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('uploadPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(selectedFile);
             }
         }
 
@@ -278,23 +535,15 @@
 
         function viewDetail(url, type, color, tag) {
             document.getElementById('detailImg').src = url;
+            document.getElementById('detailLink').href = url;
+            document.getElementById('detailLink').innerText = "View Full Image @ " + url.split('/').pop();
             document.getElementById('detailTitle').innerText = type.charAt(0).toUpperCase() + type.slice(1);
             document.getElementById('detailColor').innerText = "Color: " + color;
             document.getElementById('detailTag').innerText = "#" + tag;
             document.getElementById('detailModal').style.display = 'block';
         }
-
-        document.addEventListener("mousemove", function (e) {
-            const sparkle = document.createElement("div");
-            sparkle.classList.add("sparkle");
-            sparkle.innerHTML = "✨";
-            sparkle.style.left = e.pageX + "px";
-            sparkle.style.top = e.pageY + "px";
-            document.body.appendChild(sparkle);
-            setTimeout(() => { sparkle.remove(); }, 800);
-        });
     </script>
-
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>

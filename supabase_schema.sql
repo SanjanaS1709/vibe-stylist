@@ -41,7 +41,7 @@ CREATE TABLE user_preferences (
 ## 4. Create Outfit Catalog Table
 CREATE TABLE outfit_catalog (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    item_type TEXT CHECK (item_type IN ('top', 'pant', 'shoes', 'accessory')),
+    item_type TEXT CHECK (item_type IN ('top', 'pant', 'shoes', 'accessory', 'shirt', 'suit', 'kurta', 'kurti', 'saree', 'dress')),
     name TEXT NOT NULL,
     image_url TEXT NOT NULL,
     style_tag TEXT,
@@ -77,7 +77,7 @@ CREATE TABLE approved_outfits (
 CREATE TABLE virtual_wardrobe (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    item_type TEXT CHECK (item_type IN ('top', 'pant', 'shoes', 'accessory')),
+    item_type TEXT CHECK (item_type IN ('top', 'pant', 'shoes', 'accessory', 'shirt', 'suit', 'kurta', 'kurti', 'saree', 'dress')),
     image_url TEXT NOT NULL,
     dominant_color TEXT,
     style_tag TEXT,

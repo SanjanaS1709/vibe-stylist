@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VibeStylist - Profile</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     <style>
@@ -23,68 +25,9 @@
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at center, #4b0c11 0%, #2b0d0d 70%, #1a0505 100%);
-            color: var(--text);
             min-height: 100vh;
-            position: relative;
         }
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 800px;
-            height: 800px;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 10 L110 50 L150 60 L110 70 L100 110 L90 70 L50 60 L90 50 Z' fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.15'/%3E%3Cpath d='M100 30 L105 55 L130 60 L105 65 L100 90 L95 65 L70 60 L95 55 Z' fill='none' stroke='%23d4af37' stroke-width='0.3' opacity='0.1'/%3E%3Ccircle cx='100' cy='60' r='40' fill='none' stroke='%23d4af37' stroke-width='0.2' stroke-dasharray='2 2' opacity='0.1'/%3E%3Cpath d='M60 60 Q100 20 140 60 Q100 100 60 60' fill='none' stroke='%23d4af37' stroke-width='0.2' opacity='0.1'/%3E%3Cpath d='M100 20 Q140 60 100 100 Q60 60 100 20' fill='none' stroke='%23d4af37' stroke-width='0.2' opacity='0.1'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* ================= NAVBAR ================= */
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 60px;
-            background: linear-gradient(90deg, #4a0c11, #2b0d0d);
-        }
-
-        .logo {
-            font-weight: 800;
-            font-size: 22px;
-            color: var(--gold);
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 40px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            position: relative;
-        }
-
-        .nav-links .active a {
-            color: var(--gold);
-        }
-
-        .nav-links .active a::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: -8px;
-            width: 100%;
-            height: 3px;
-            background: var(--gold);
-        }
 
         /* ================= PROFILE HEADER ================= */
 
@@ -93,42 +36,109 @@
             padding: 80px 20px 40px;
         }
 
-        .profile-pic {
-            width: 130px;
-            height: 130px;
+        .profile-pic-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
             border-radius: 50%;
-            border: 4px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--gold), #5a0f14);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .profile-pic-ring {
+            position: absolute;
+            width: calc(100% + 15px);
+            height: calc(100% + 15px);
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            opacity: 0.6;
+        }
+
+        .profile-pic {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 5px solid var(--deep);
             object-fit: cover;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            position: relative;
+            z-index: 2;
         }
 
         .level-badge {
+            margin-top: 10px;
+            background: linear-gradient(to bottom, #f6e27a, #d4af37, #b8860b);
+            color: #1a0505;
+            padding: 3px 12px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 9px;
+            letter-spacing: 0.5px;
             display: inline-block;
-            margin-top: 15px;
-            background: var(--gold);
-            color: #000;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+            text-transform: uppercase;
         }
 
         .profile-header h1 {
-            font-size: 48px;
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            margin-top: 25px;
+            color: #f6e27a;
+            letter-spacing: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             margin-top: 20px;
-            background: linear-gradient(to right, var(--gold), var(--soft-gold));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        }
+
+        .action-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--gold);
+            color: black;
         }
 
         /* ================= SECTION TITLE ================= */
 
         .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             margin: 60px 0 40px;
             font-weight: 600;
-            letter-spacing: 2px;
-            color: var(--gold);
+            letter-spacing: 3px;
+            color: #d4af37;
+            font-size: 14px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 0 20px;
+            max-width: 200px;
         }
 
         /* ================= CARD CONTAINER ================= */
@@ -147,29 +157,52 @@
         /* ================= STYLE STATS ================= */
 
         .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
         }
 
-        .stats-grid img {
+        .stat-card {
+            flex: 1;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .stat-card .img-frame {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .stat-card img {
             width: 100%;
-            border-radius: 15px;
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            aspect-ratio: 1/1.2;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
         .stats-caption {
-            text-align: center;
-            margin-top: 15px;
+            font-size: 15px;
             font-style: italic;
-            color: var(--soft-gold);
+            color: #f6e27a;
+            font-family: 'Playfair Display', serif;
         }
 
         .stats-description {
-            margin-top: 40px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
             text-align: center;
             line-height: 1.8;
-            opacity: 0.9;
+            font-size: 14px;
+            opacity: 0.8;
+            font-style: italic;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* ================= STYLE BADGES ================= */
@@ -297,21 +330,133 @@
             color: white;
         }
 
-        .challenge-complete {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #3a0f0f;
-            padding: 40px 80px;
-            border: 2px solid var(--gold);
-            text-align: center;
+        /* EDIT MODAL */
+        .modal {
             display: none;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.8);
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
         }
 
-        .challenge-complete h2 {
+        .modal-content {
+            background: #2b0d0d;
+            margin: 15% auto;
+            padding: 40px;
+            border: 3px solid var(--gold);
+            border-radius: 20px;
+            width: 400px;
+            position: relative;
+        }
+
+        .modal-content h2 {
             color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--gold);
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* LOOK HISTORY GALLERY */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .saved-look-card {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .saved-look-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .mini-moodboard {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            grid-template-rows: repeat(2, auto);
+            grid-template-areas:
+                "acc top"
+                "pant top"
+                "pant shoe";
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .mini-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mini-area img {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+        }
+
+        .m-acc {
+            grid-area: acc;
+            min-height: 40px;
+        }
+
+        .m-top {
+            grid-area: top;
+            min-height: 120px;
+        }
+
+        .m-pant {
+            grid-area: pant;
+            min-height: 140px;
+        }
+
+        .m-shoe {
+            grid-area: shoe;
+            min-height: 60px;
+        }
+
+        .look-meta {
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 10px;
+        }
+
+        .look-vibe {
+            color: #1a0505;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .look-date {
+            font-size: 9px;
+            opacity: 0.5;
+            color: #000;
         }
     </style>
 </head>
@@ -323,29 +468,43 @@
 
     <!-- PROFILE HEADER -->
     <section class="profile-header">
-        <img src="{{ url_for('static', filename='images/pfp.jpeg') }}" class="profile-pic">
-        <div class="level-badge">SCORE: {{ user.engagement_score }}</div>
+        <div class="profile-pic-container">
+            <div class="profile-pic-ring"></div>
+            <img src="{{ url_for('static', filename='images/pfp.jpeg') }}" class="profile-pic">
+        </div>
+        <div class="level-badge">LEVEL FIVE</div>
         <h1>{{ user.name }}</h1>
-        <p style="opacity: 0.6; margin-top: 5px;">{{ user.email }}</p>
+        <div class="header-actions">
+            <button class="action-btn" onclick="openEditModal()">Edit Profile</button>
+            <a href="{{ url_for('auth.logout') }}" class="action-btn"
+                style="border-color: #ff4d4d; color: #ff4d4d;">Sign
+                Out</a>
+        </div>
+        <p style="opacity: 0.6; margin-top: 15px; font-size: 12px;">{{ user.email }}</p>
     </section>
 
     <!-- STYLE STATS -->
     <div class="section-title">YOUR STYLE STATS</div>
     <div class="card-box">
         <div class="stats-grid">
-            <div>
-                <img src="{{ url_for('static', filename='images/fit1.jpeg') }}">
+            <div class="stat-card">
+                <div class="img-frame">
+                    <img src="{{ url_for('static', filename='images/fit1.jpeg') }}">
+                </div>
                 <div class="stats-caption">Outfit of the Week</div>
             </div>
-            <div>
-                <img src="{{ url_for('static', filename='images/fit2.jpeg') }}">
+            <div class="stat-card">
+                <div class="img-frame">
+                    <img src="{{ url_for('static', filename='images/fit2.jpeg') }}">
+                </div>
                 <div class="stats-caption">Best Outfit So Far</div>
             </div>
         </div>
 
         <div class="stats-description">
-            Your current style patterns show an affinity for “{{ prefs.style_archetype or 'Modern' }}” aesthetics.
-            Your skin tone is analyzed as <strong>{{ user.skin_tone_result or 'Pending' }}</strong>.
+            Your current style patterns show an 85% affinity for 'Navratri-Modern' fusion. Specifically, the deep violet
+            silk paired with professional silhouettes matches your golden undertones perfectly. Focus on metallic gold
+            accessories next week to increase your 'Fusion Queen' rank.
         </div>
     </div>
 
@@ -400,7 +559,8 @@
         <!-- JOURNEY -->
         <div>
             <div class="challenge-input">
-                <input type="text" id="challengeText" placeholder="Create your own challenge...">
+                <input type="text" id="challengeText" placeholder="Create your own challenge..."
+                    onkeypress="if(event.key==='Enter') addChallenge()">
                 <button onclick="addChallenge()">Add</button>
             </div>
 
@@ -409,12 +569,65 @@
     </div>
 
 
-    <div class="challenge-complete" id="completeBox">
-        <h2>Challenge Complete</h2>
+    <div class="challenge-complete" id="completeBox"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #3a0f0f; padding: 40px 80px; border: 2px solid var(--gold); text-align: center; display: none; box-shadow: 0 0 50px rgba(212, 175, 55, 0.8); z-index: 5000;">
+        <h2 style="color: var(--gold);">Challenge Complete</h2>
         <p>New Ava Badge Unlocked ✨</p>
     </div>
 
+    <!-- SAVED LOOKS HISTORY -->
+    <div class="section-title">YOUR LOOK HISTORY</div>
+    <div class="card-box" style="margin-bottom: 80px;">
+        <div id="historyContainer" class="history-grid">
+            <div style="text-align: center; width: 100%; grid-column: 1 / -1; padding: 40px; opacity: 0.5;">
+                ✨ FETCHING YOUR ICONIC LOOKS...
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Profile</h2>
+            <form id="editForm">
+                <label style="display: block; margin-bottom: 10px; color: var(--soft-gold);">My Name</label>
+                <input type="text" id="editName" value="{{ user.name }}">
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="action-btn"
+                        style="background: var(--gold); color: black;">Save</button>
+                    <button type="button" class="action-btn" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        function openEditModal() { document.getElementById('editModal').style.display = 'block'; }
+        function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+
+        document.getElementById('editForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('editName').value;
+
+            try {
+                const res = await fetch('/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    document.querySelector('.profile-header h1').innerText = newName;
+                    closeEditModal();
+                    alert('Profile updated successfully! ✨');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error. Please try again.');
+            }
+        };
 
         function addChallenge() {
             const input = document.getElementById("challengeText");
@@ -511,6 +724,65 @@
             }, 2000);
         }
 
+        // FETCH SAVED LOOKS
+        async function fetchHistory() {
+            const container = document.getElementById('historyContainer');
+            try {
+                const res = await fetch('/get-my-looks');
+                const data = await res.json();
+
+                if (data.status === 'success' && data.looks.length > 0) {
+                    container.innerHTML = '';
+                    data.looks.forEach(look => {
+                        const d = look.outfit_data;
+                        const date = new Date(look.created_at).toLocaleDateString('en-US', {
+                            month: 'short', day: 'numeric', year: 'numeric'
+                        });
+
+                        const card = document.createElement('div');
+                        card.className = 'saved-look-card';
+
+                        // Use only the first item from each category if multiple were saved
+                        const items = {
+                            top: d.top?.[0] || d.shirt?.[0] || null,
+                            pant: d.pant?.[0] || d.bottom?.[0] || null,
+                            shoes: d.shoes?.[0] || null,
+                            accessory: d.accessory?.[0] || null
+                        };
+
+                        card.innerHTML = `
+                            <div class="mini-moodboard">
+                                <div class="mini-area m-acc">
+                                    ${items.accessory ? `<img src="${items.accessory.image_url}">` : ''}
+                                </div>
+                                <div class="mini-area m-top">
+                                    ${items.top ? `<img src="${items.top.image_url}">` : ''}
+                                </div>
+                                <div class="mini-area m-pant">
+                                    ${items.pant ? `<img src="${items.pant.image_url}">` : ''}
+                                </div>
+                                <div class="mini-area m-shoe">
+                                    ${items.shoes ? `<img src="${items.shoes.image_url}">` : ''}
+                                </div>
+                            </div>
+                            <div class="look-meta">
+                                <div class="look-vibe">${look.vibe || 'Iconic'}</div>
+                                <div class="look-date">${date}</div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = '<div style="text-align: center; width: 100%; grid-column: 1 / -1; padding: 40px; opacity: 0.5;">No saved looks yet. Start styling! ✨</div>';
+                }
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div style="text-align: center; width: 100%; grid-column: 1 / -1; padding: 40px; color: #ff4d4d;">Failed to load your journey.</div>';
+            }
+        }
+
+        // Initialize
+        fetchHistory();
     </script>
 
 </body>

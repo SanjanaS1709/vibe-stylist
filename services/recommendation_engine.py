@@ -87,18 +87,46 @@ class RecommendationEngine:
         Generates 5-6 items for a specific category to let user select favorites.
         Strictly enforces the 'wardrobe' only rule if selected.
         """
-        wardrobe = wardrobe_service.get_user_wardrobe(user_id)
-        relevant_wardrobe = [item for item in wardrobe if item['item_type'].lower() == category.lower()]
+        # Broad and inclusive category mapping for robust wardrobe syncing
+        CAT_MAP = {
+            "top": ["top", "shirt", "kurti", "kurta", "saree", "dress", "suit", "blouse", "tops", "shirts", "kurtis", "kurtas", "sarees", "dresses", "suits", "blouses"],
+            "pant": ["pant", "trouser", "jeans", "bottom", "trousers", "pants", "denim", "leggings", "skirt", "skirts", "shorts", "bottoms"],
+            "shoes": ["shoes", "sneakers", "boots", "footwear", "heels", "sandals", "slipper", "slippers"],
+            "accessory": ["accessory", "jewellery", "bag", "jewelry", "belt", "scarf", "accessories", "jewelries", "bags", "belts", "scarves"]
+        }
         
-        if sourcing == 'wardrobe' and not relevant_wardrobe:
-            return []
+        wardrobe = wardrobe_service.get_user_wardrobe(user_id)
+        target_cat = category.lower()
+        # Fallback to the category itself if not in map, but use the mapping for broad matching
+        allowed_types = CAT_MAP.get(target_cat, [target_cat, target_cat + 's'])
+        
+        relevant_wardrobe = [item for item in wardrobe if item['item_type'].lower() in allowed_types]
+        
+        # CORE FIX: If user wants only wardrobe, don't let AI filter them out!
+        # Return them directly formatted as the UI expects.
+        if sourcing == 'wardrobe':
+            if not relevant_wardrobe:
+                return []
+            
+            # Format wardrobe items to match the expected structure
+            formatted_wardrobe = []
+            for item in relevant_wardrobe[:10]: # Return more options if available
+                formatted_wardrobe.append({
+                    "name": f"{item['dominant_color']} {item['item_type']}",
+                    "source": "wardrobe",
+                    "item_id": item['id'],
+                    "color": item['dominant_color'],
+                    "style_tag": item['style_tag'],
+                    "image_url": item['image_url']
+                })
+            return formatted_wardrobe
             
         # Map categories to search keywords for high-quality fashion images
         image_keywords = {
-            "top": "fashion shirt top clothing",
-            "pant": "trousers pants fashion",
-            "shoes": "fashion sneakers shoes",
-            "accessory": "fashion accessory jewelry"
+            "top": "designer shirt luxury blouse couture top",
+            "pant": "high-fashion trousers tailored pants aesthetic bottom",
+            "shoes": "premium sneakers luxury heels boots high-fashion footwear",
+            "accessory": "luxury jewelry high-fashion accessory designer bag"
         }
         keyword = image_keywords.get(category.lower(), "fashion clothing")
         
@@ -129,9 +157,22 @@ class RecommendationEngine:
             data = json.loads(completion.choices[0].message.content)
             items = data.get('items', data.get('suggestions', data.get('options', [])))
             
-            # Post-filter to strictly enforce sourcing if AI failed to follow instructions
-            if sourcing == 'wardrobe':
-                items = [it for it in items if it.get('source') == 'wardrobe']
+            # Post-filter to strictly enforce wardrobe injection if AI missed it in hybrid mode
+            if sourcing == 'hybrid':
+                wardrobe_ids_in_result = [it.get('item_id') for it in items if it.get('source') == 'wardrobe']
+                # If AI ignored wardrobe, force include at least 2 if available
+                if not wardrobe_ids_in_result and relevant_wardrobe:
+                    for i in range(min(2, len(relevant_wardrobe))):
+                        w_item = relevant_wardrobe[i]
+                        items.insert(0, {
+                            "name": f"{w_item['dominant_color']} {w_item['item_type']}",
+                            "source": "wardrobe",
+                            "item_id": w_item['id'],
+                            "color": w_item['dominant_color'],
+                            "style_tag": w_item['style_tag'],
+                            "image_url": w_item['image_url']
+                        })
+                    items = items[:6] # Keep it to 6
             
             for item in items:
                 if item.get('source') == 'ecommerce':

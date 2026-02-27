@@ -41,3 +41,47 @@ def chatbot_interaction():
         return jsonify({"status": "success", "response": response})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@outfit_bp.route('/save-look', methods=['POST'])
+@login_required
+def save_look():
+    user_id = session.get('user_id')
+    data = request.json
+    outfit_data = data.get('outfit_data')
+    vibe = data.get('vibe')
+    
+    if not outfit_data:
+        return jsonify({"status": "error", "message": "No outfit data provided"}), 400
+        
+    try:
+        # Check if table exists by doing a simple insert
+        supabase.table('saved_looks').insert({
+            'user_id': user_id,
+            'outfit_data': outfit_data,
+            'vibe': vibe
+        }).execute()
+        return jsonify({"status": "success", "message": "Look saved successfully!"})
+    except Exception as e:
+        error_msg = str(e)
+        if "relation \"public.saved_looks\" does not exist" in error_msg:
+            return jsonify({
+                "status": "error", 
+                "message": "Database table 'saved_looks' is missing. Please run the SQL migration I provided in the Supabase SQL Editor."
+            }), 400
+        print(f"Error saving look: {e}")
+        return jsonify({"status": "error", "message": error_msg}), 500
+
+@outfit_bp.route('/get-my-looks', methods=['GET'])
+@login_required
+def get_my_looks():
+    user_id = session.get('user_id')
+    try:
+        res = supabase.table('saved_looks')\
+            .select('*')\
+            .eq('user_id', user_id)\
+            .order('created_at', desc=True)\
+            .execute()
+        return jsonify({"status": "success", "looks": res.data})
+    except Exception as e:
+        print(f"Error fetching looks: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500

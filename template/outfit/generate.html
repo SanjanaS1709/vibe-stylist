@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VibeStylist - Assembly Room</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         :root {
             --royal-red: #5a0f14;
@@ -131,7 +132,8 @@
         .vibe-card img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .vibe-info {
@@ -193,7 +195,8 @@
         .avatar-display img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: rgba(0, 0, 0, 0.1);
         }
 
         .persona-btn {
@@ -271,7 +274,8 @@
         .select-card img {
             width: 100%;
             height: 250px;
-            object-fit: cover;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .select-card .check {
@@ -451,6 +455,197 @@
             justify-content: center;
             flex-direction: column;
         }
+
+        /* ASSEMBLY CAROUSAL STYLES */
+        .category-carousel-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            overflow: hidden;
+            height: 240px;
+        }
+
+        .category-carousel {
+            height: 100%;
+            width: 100%;
+        }
+
+        .carousel-item {
+            display: none;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .carousel-item.active {
+            display: flex;
+            animation: carouselFade 0.5s ease;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 170px;
+            object-fit: contain;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-caption {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(212, 175, 55, 0.8);
+            color: black;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: 800;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-nav:hover {
+            background: var(--gold);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 15px var(--gold);
+        }
+
+        .carousel-nav.prev {
+            left: 10px;
+        }
+
+        .carousel-nav.next {
+            right: 10px;
+        }
+
+        @keyframes carouselFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* FLAT LAY MOODBOARD STYLES */
+        .flat-lay-canvas {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.05), 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            min-height: 700px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flat-lay-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            grid-template-rows: auto auto auto;
+            grid-template-areas:
+                "acc top"
+                "pant top"
+                "pant shoe";
+            gap: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .mood-area {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .area-acc {
+            grid-area: acc;
+            min-height: 120px;
+        }
+
+        .area-top {
+            grid-area: top;
+            min-height: 350px;
+        }
+
+        .area-pant {
+            grid-area: pant;
+            min-height: 450px;
+        }
+
+        .area-shoe {
+            grid-area: shoe;
+            min-height: 200px;
+        }
+
+        /* Override carousel for flat-lay */
+        .flat-lay-grid .category-carousel-container {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            height: 100%;
+            width: 100%;
+            overflow: visible;
+        }
+
+        .flat-lay-grid .carousel-item img {
+            height: auto;
+            max-height: 100%;
+            width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
+            background: transparent;
+        }
+
+        .flat-lay-grid .carousel-caption {
+            display: none;
+            /* Clean look, no text labels on moodboard */
+        }
+
+        .flat-lay-grid .carousel-nav {
+            background: rgba(0, 0, 0, 0.1);
+            color: black;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .flat-lay-grid .carousel-nav:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        .flat-lay-grid .area-acc img {
+            max-height: 100px;
+            width: 80%;
+        }
+
+        .flat-lay-grid .area-top img {
+            max-height: 380px;
+        }
+
+        .flat-lay-grid .area-pant img {
+            max-height: 480px;
+        }
+
+        .flat-lay-grid .area-shoe img {
+            max-height: 180px;
+            width: 90%;
+        }
     </style>
 </head>
 
@@ -547,10 +742,12 @@
             <div class="assembly-container">
                 <div class="outfit-canvas">
                     <h3
-                        style="color: var(--gold); margin-bottom: 25px; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px;">
-                        Selected Components</h3>
-                    <div id="assembly-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                        <!-- selected items summary -->
+                        style="color: var(--gold); margin-bottom: 15px; text-transform: uppercase; font-size: 14px; letter-spacing: 1px;">
+                        Style Canvas</h3>
+                    <div class="flat-lay-canvas">
+                        <div id="moodboard" class="flat-lay-grid">
+                            <!-- Moodboard areas -->
+                        </div>
                     </div>
                 </div>
 
@@ -573,7 +770,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin: 30px 0;">
-                <button class="btn-gold" onclick="window.location.href='/dashboard'">SAVE LOOK & EXIT ✅</button>
+                <button class="btn-gold" onclick="saveAndExit()">SAVE LOOK & EXIT ✅</button>
             </div>
         </div>
 
@@ -584,12 +781,6 @@
     </div>
 
     <script>
-        // SPARKLE SCRIPT
-        document.addEventListener("mousemove", (e) => {
-            const s = document.createElement("div"); s.className = "sparkle"; s.innerHTML = "✨";
-            s.style.left = e.pageX + "px"; s.style.top = e.pageY + "px"; document.body.appendChild(s);
-            setTimeout(() => s.remove(), 800);
-        });
 
         // STATE
         let activeVibe = 'BADDIE';
@@ -598,6 +789,7 @@
         let categories = ['top', 'pant', 'shoes', 'accessory'];
         let currentIdx = 0;
         let selections = { top: [], pant: [], shoes: [], accessory: [] };
+        let slideIndices = { top: 0, pant: 0, shoes: 0, accessory: 0 };
 
         const personas = {
             female: { name: 'Sia', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300', desc: "Sia is sophisticated and elegant, focusing on high-fashion silhouettes and luxury details." },
@@ -672,7 +864,7 @@
                         }
 
                         card.innerHTML = `
-                            <img src="${item.image_url}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';">
+                            <img src="${item.image_url}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68ec25d43d?w=400';">
                             <div class="check">✓</div>
                             <div style="padding: 15px;">
                                 <div style="font-size: 13px; font-weight: 700; color: var(--gold);">${item.name}</div>
@@ -713,19 +905,93 @@
             const p = personas[activeAssistant];
             document.getElementById('chat-avatar').src = p.img;
             document.getElementById('chat-name').innerText = p.name;
-            document.getElementById('chat-messages').innerHTML = `<div class="msg ai">I am ${p.name}. I've reviewed your selections. A very ${activeVibe} choice! How can I help you style this further?</div>`;
+            document.getElementById('chat-messages').innerHTML = `<div class="msg ai">I am ${p.name}. I've reviewed your selections. I've laid them out on the style canvas for you. How does it look?</div>`;
 
-            const g = document.getElementById('assembly-grid'); g.innerHTML = '';
-            for (let c in selections) {
-                selections[c].forEach(item => {
-                    const dv = document.createElement('div');
-                    dv.style.cssText = "background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(212,175,55,0.1); overflow: hidden;";
-                    dv.innerHTML = `
-                        <img src="${item.image_url}" style="width:100%; height:150px; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400';">
-                        <div style="padding: 10px; font-size: 11px; font-weight: 700; color: var(--gold);">${c.toUpperCase()}: ${item.name}</div>
+            const mb = document.getElementById('moodboard'); mb.innerHTML = '';
+            slideIndices = { top: 0, pant: 0, shoes: 0, accessory: 0 };
+
+            const areaMap = {
+                'accessory': 'area-acc',
+                'top': 'area-top',
+                'pant': 'area-pant',
+                'shoes': 'area-shoe'
+            };
+
+            categories.forEach(c => {
+                const items = selections[c];
+                const areaClass = areaMap[c];
+
+                const areaDiv = document.createElement('div');
+                areaDiv.className = `mood-area ${areaClass}`;
+
+                if (items.length === 0) {
+                    areaDiv.style.opacity = '0.1';
+                    areaDiv.innerHTML = `<div style="color: #000; font-size: 10px; font-weight: 800;">MISSING ${c.toUpperCase()}</div>`;
+                    mb.appendChild(areaDiv);
+                    return;
+                }
+
+                const carouselId = `${c}-carousel`;
+                let navigation = '';
+                if (items.length > 1) {
+                    navigation = `
+                        <button class="carousel-nav prev" onclick="moveSlide('${c}', -1)">❮</button>
+                        <button class="carousel-nav next" onclick="moveSlide('${c}', 1)">❯</button>
                     `;
-                    g.appendChild(dv);
+                }
+
+                areaDiv.innerHTML = `
+                    <div class="category-carousel-container">
+                        <div id="${carouselId}" class="category-carousel">
+                            ${items.map((item, idx) => `
+                                <div class="carousel-item ${idx === 0 ? 'active' : ''}">
+                                    <img src="${item.image_url}" onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68ec25d43d?w=400';">
+                                    <div class="carousel-caption">${item.name}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${navigation}
+                    </div>
+                `;
+                mb.appendChild(areaDiv);
+            });
+        }
+
+        function moveSlide(cat, dir) {
+            const items = selections[cat];
+            if (items.length <= 1) return;
+
+            slideIndices[cat] = (slideIndices[cat] + dir + items.length) % items.length;
+
+            const carousel = document.getElementById(`${cat}-carousel`);
+            const slides = carousel.querySelectorAll('.carousel-item');
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === slideIndices[cat]);
+            });
+        }
+
+        async function saveAndExit() {
+            document.getElementById('loading').style.display = 'flex';
+            try {
+                const res = await fetch('/save-look', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        outfit_data: selections,
+                        vibe: activeVibe
+                    })
                 });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    window.location.href = '/dashboard';
+                } else {
+                    alert("Error saving look: " + data.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Connection error while saving your look.");
+            } finally {
+                document.getElementById('loading').style.display = 'none';
             }
         }
 

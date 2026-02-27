@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap');
+
 /* =========================
    ROYAL THEME VARIABLES
 ========================= */
@@ -24,6 +26,7 @@ body {
     overflow-x: hidden;
     min-height: 100vh;
     position: relative;
+    background-attachment: fixed;
 }
 
 body::before {
@@ -32,10 +35,9 @@ body::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 900px;
-    height: 900px;
-    /* Intricate Kolam Design SVG */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='1' opacity='0.25'%3E%3Cpath d='M100 10 Q110 30 130 30 Q150 30 150 50 Q150 70 170 80 Q190 90 190 100 Q190 110 170 120 Q150 130 150 150 Q150 170 130 170 Q110 170 100 190 Q90 170 70 170 Q50 170 50 150 Q50 130 30 120 Q10 110 10 100 Q10 90 30 80 Q50 70 50 50 Q50 30 70 30 Q90 30 100 10' /%3E%3Ccircle cx='100' cy='100' r='5' fill='%23d4af37' /%3E%3Ccircle cx='100' cy='50' r='3' /%3E%3Ccircle cx='100' cy='150' r='3' /%3E%3Ccircle cx='50' cy='100' r='3' /%3E%3Ccircle cx='150' cy='100' r='3' /%3E%3Crect x='85' y='85' width='30' height='30' transform='rotate(45 100 100)' /%3E%3Cpath d='M60 60 L140 140 M140 60 L60 140' stroke-width='0.5' /%3E%3C/g%3E%3C/svg%3E");
+    width: 1000px;
+    height: 1000px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='1.2' opacity='0.3'%3E%3Cpath d='M100 10 Q110 30 130 30 Q150 30 150 50 Q150 70 170 80 Q190 90 190 100 Q190 110 170 120 Q150 130 150 150 Q150 170 130 170 Q110 170 100 190 Q90 170 70 170 Q50 170 50 150 Q50 130 30 120 Q10 110 10 100 Q10 90 30 80 Q50 70 50 50 Q50 30 70 30 Q90 30 100 10' /%3E%3Ccircle cx='100' cy='100' r='6' fill='%23d4af37' /%3E%3Ccircle cx='100' cy='50' r='4' /%3E%3Ccircle cx='100' cy='150' r='4' /%3E%3Ccircle cx='50' cy='100' r='4' /%3E%3Ccircle cx='150' cy='100' r='4' /%3E%3Crect x='85' y='85' width='30' height='30' transform='rotate(45 100 100)' /%3E%3Cpath d='M60 60 L140 140 M140 60 L60 140' stroke-width='0.7' /%3E%3C/g%3E%3C/svg%3E");
     background-size: contain;
     background-repeat: no-repeat;
     z-index: -1;
@@ -128,12 +130,10 @@ body::before {
 }
 
 .header h1 {
+    font-family: 'Playfair Display', serif;
     font-size: 48px;
     font-weight: 800;
-    background: linear-gradient(to right, var(--gold), var(--soft-gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--soft-gold);
     margin: 0;
 }
 
@@ -368,4 +368,28 @@ textarea {
 .completed {
     text-decoration: line-through;
     opacity: 0.6;
+}
+
+@keyframes sparkleFade {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(2);
+    }
+}
+
+.sparkle {
+    position: fixed;
+    font-size: 18px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: sparkleFade 0.8s linear forwards;
+}
+
+.serif-title {
+    font-family: 'Playfair Display', serif;
 }

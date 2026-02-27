@@ -95,3 +95,18 @@ def logout():
     session.clear()
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
+
+@auth_bp.route('/update-profile', methods=['POST'])
+@login_required
+def update_profile():
+    data = request.json
+    new_name = data.get('name')
+    if not new_name:
+        return {"status": "error", "message": "Name is required"}, 400
+    
+    try:
+        supabase.table('users').update({'name': new_name}).eq('id', session['user_id']).execute()
+        session['user_name'] = new_name
+        return {"status": "success", "message": "Profile updated"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}, 500

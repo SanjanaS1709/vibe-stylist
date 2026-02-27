@@ -98,3 +98,18 @@ def upload_item():
     except Exception as e:
         print(f"UPLOAD ERROR: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@wardrobe_bp.route('/remove-wardrobe-item/<item_id>', methods=['POST'])
+@login_required
+def remove_item(item_id):
+    user_id = session.get('user_id')
+    try:
+        # Delete item from Supabase, ensuring it belongs to the user
+        response = supabase.table('virtual_wardrobe').delete().eq('id', item_id).eq('user_id', user_id).execute()
+        
+        if response.data:
+            return jsonify({"status": "success", "message": "Item removed"})
+        else:
+            return jsonify({"status": "error", "message": "Item not found or unauthorized"}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500

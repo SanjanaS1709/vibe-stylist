@@ -30,28 +30,8 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at center, #4b0c11 0%, #2b0d0d 70%, #1a0505 100%);
-            color: var(--text);
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 900px;
-            height: 900px;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='1.2' opacity='0.3'%3E%3Cpath d='M100 10 Q110 30 130 30 Q150 30 150 50 Q150 70 170 80 Q190 90 190 100 Q190 110 170 120 Q150 130 150 150 Q150 170 130 170 Q110 170 100 190 Q90 170 70 170 Q50 170 50 150 Q50 130 30 120 Q10 110 10 100 Q10 90 30 80 Q50 70 50 50 Q50 30 70 30 Q90 30 100 10' /%3E%3Ccircle cx='100' cy='100' r='6' fill='%23d4af37' /%3E%3Ccircle cx='100' cy='50' r='4' /%3E%3Ccircle cx='100' cy='150' r='4' /%3E%3Ccircle cx='50' cy='100' r='4' /%3E%3Ccircle cx='150' cy='100' r='4' /%3E%3Crect x='85' y='85' width='30' height='30' transform='rotate(45 100 100)' /%3E%3Cpath d='M60 60 L140 140 M140 60 L60 140' stroke-width='0.7' /%3E%3C/g%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            z-index: -1;
-            pointer-events: none;
+        section {
+            padding: 100px 8%;
         }
 
         section {
@@ -118,10 +98,6 @@
             background: var(--gold);
             box-shadow: 0 0 12px var(--gold);
         }
-
-
-
-
 
         /* =========================
    HERO
@@ -233,6 +209,12 @@
             width: 100%;
             object-fit: cover;
             border-radius: 25px;
+        }
+
+        .hero-images img {
+            border: 5px solid var(--gold);
+            outline: 2px solid rgba(246, 226, 122, 0.4);
+            transition: 0.4s;
         }
 
         .hero-images img:hover {
@@ -417,6 +399,16 @@
                 transform: translateY(-15px);
             }
         }
+
+        .nav-links a,
+        .primary,
+        .secondary,
+        .final button,
+        .hero-images img,
+        .card,
+        .why-item {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -450,19 +442,25 @@
         </div>
     </div>
 
-    <section>
+    <section class="path">
+        <h1 style="text-align: center; font-size: 52px; margin-bottom: 60px;">Your Path to <span
+                class="gold-text">Iconic Looks</span></h1>
         <div class="cards">
             <div class="card">
                 <h3>Pick Your Mood</h3>
+                <p style="opacity: 0.8; margin-top: 10px;">Brunch, Wedding, or WFH? Tell us your vibe.</p>
             </div>
             <div class="card">
                 <h3>Upload Photo</h3>
+                <p style="opacity: 0.8; margin-top: 10px;">Let AI analyze your skin tone and body type.</p>
             </div>
             <div class="card">
                 <h3>Add Wardrobe</h3>
+                <p style="opacity: 0.8; margin-top: 10px;">Mix & match with pieces you already own.</p>
             </div>
             <div class="card">
                 <h3>Swipe & Decide</h3>
+                <p style="opacity: 0.8; margin-top: 10px;">Swipe right to save, left to skip. AI learns fast.</p>
             </div>
         </div>
     </section>
@@ -472,7 +470,7 @@
             <h1>Master your <span class="gold-text">Swipe Style</span></h1>
             <p>Swipe right to save, left to skip. AI learns fast.</p>
         </div>
-        <img src="{{ url_for('static', filename='images/swipe.jpeg') }}" alt="Swipe interface">
+        <img src="{{ url_for('static', filename='images/home_avatar.png') }}" alt="Swipe interface">
     </section>
 
     <section class="why">
@@ -489,21 +487,10 @@
 
     <section class="final">
         <h2>Stop Overthinking.<br><span class="gold-text">Start Styling.</span></h2>
-        <button>Get Your First Recommendation</button>
+        <button onclick="window.location.href='/analyze-skin'">Get Your First Recommendation</button>
     </section>
 
-    <script>
-        document.addEventListener("mousemove", function (e) {
-            const sparkle = document.createElement("div");
-            sparkle.className = "sparkle";
-            sparkle.innerHTML = "✨";
-            sparkle.style.left = e.pageX + "px";
-            sparkle.style.top = e.pageY + "px";
-            document.body.appendChild(sparkle);
-            setTimeout(() => sparkle.remove(), 800);
-        });
-    </script>
-
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>

@@ -82,12 +82,35 @@ class RecommendationEngine:
             print(f"Error in recommendation engine: {e}")
             return None
 
-    def get_category_suggestions(self, user_id, category, vibe, sourcing):
+    def _get_real_image(self, query):
+        """
+        Attempts to fetch a real product image from Myntra for high-quality visuals.
+        """
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+        }
+        try:
+            # We search specifically for female apparel
+            search_url = f"https://www.myntra.com/{query.replace(' ', '-')}"
+            response = requests.get(search_url, headers=headers, timeout=5)
+            if response.status_code == 200:
+                # Optimized regex to find Myntra product images in the raw HTML
+                import re
+                images = re.findall(r'https://assets\.myntassets\.com/h_[^"\']+\.jpg', response.text)
+                if images:
+                    # Return the first high-quality product image found
+                    return images[0]
+        except:
+            pass
+        return None
+
+    def get_category_suggestions(self, user_id, category, vibe, sourcing, filters=None):
         """
         Generates 5-6 items for a specific category to let user select favorites.
-        Strictly enforces the 'wardrobe' only rule if selected.
+        Extremely strict on Vibe and Gender (Female).
         """
-        # Broad and inclusive category mapping for robust wardrobe syncing
+        import requests # Ensuring requests is available
+        filters = filters or {}
         CAT_MAP = {
             "top": ["top", "shirt", "kurti", "kurta", "saree", "dress", "suit", "blouse", "tops", "shirts", "kurtis", "kurtas", "sarees", "dresses", "suits", "blouses"],
             "pant": ["pant", "trouser", "jeans", "bottom", "trousers", "pants", "denim", "leggings", "skirt", "skirts", "shorts", "bottoms"],
@@ -97,106 +120,121 @@ class RecommendationEngine:
         
         wardrobe = wardrobe_service.get_user_wardrobe(user_id)
         target_cat = category.lower()
-        # Fallback to the category itself if not in map, but use the mapping for broad matching
         allowed_types = CAT_MAP.get(target_cat, [target_cat, target_cat + 's'])
         
-        relevant_wardrobe = [item for item in wardrobe if item['item_type'].lower() in allowed_types]
+        # Filter by category
+        cat_wardrobe = [item for item in wardrobe if item['item_type'].lower() in allowed_types]
         
-        # CORE FIX: If user wants only wardrobe, don't let AI filter them out!
-        # Return them directly formatted as the UI expects.
+        # ELITE VIBE FILTERING: 
+        # Only suggest wardrobe items if they are tagged with the specific vibe or a related keyword
+        relevant_wardrobe = []
+        if vibe and vibe != 'General':
+            vibe_keywords = [vibe.lower(), vibe.lower().replace(' ', '')]
+            # Map vibes to broader overlapping styles (e.g. CLEAN GIRL -> Minimalist)
+            VIBE_RELAX = {
+                "CLEAN GIRL": ["minimalist", "basic", "white", "beige", "sleek"],
+                "SOFT GIRL": ["pastel", "pink", "cute", "floral"],
+                "BADDIE": ["edgy", "black", "tight", "bold"],
+                "ETHNIC": ["desi", "kurta", "kurti", "saree", "traditional"],
+                "OLD MONEY": ["classic", "luxury", "blazer", "formal"]
+            }
+            rel_keys = VIBE_RELAX.get(vibe.upper(), [])
+            
+            for it in cat_wardrobe:
+                tag = it.get('style_tag', '').lower()
+                typ = it.get('item_type', '').lower()
+                desc = f"{tag} {typ}"
+                if any(k in desc for k in vibe_keywords) or any(k in desc for k in rel_keys):
+                    relevant_wardrobe.append(it)
+        else:
+            relevant_wardrobe = cat_wardrobe
+
+        # Apply color filter
+        if filters.get('color'):
+            relevant_wardrobe = [it for it in relevant_wardrobe if filters['color'].lower() in it['dominant_color'].lower()]
+
         if sourcing == 'wardrobe':
-            if not relevant_wardrobe:
-                return []
+            if not relevant_wardrobe: return []
+            return [{
+                "name": f"{item['dominant_color']} {item['item_type']}",
+                "source": "wardrobe",
+                "item_id": item['id'],
+                "color": item['dominant_color'],
+                "style_tag": item['style_tag'],
+                "image_url": item['image_url'],
+                "price": "Owned",
+                "size": "My Size"
+            } for item in relevant_wardrobe[:10]]
             
-            # Format wardrobe items to match the expected structure
-            formatted_wardrobe = []
-            for item in relevant_wardrobe[:10]: # Return more options if available
-                formatted_wardrobe.append({
-                    "name": f"{item['dominant_color']} {item['item_type']}",
-                    "source": "wardrobe",
-                    "item_id": item['id'],
-                    "color": item['dominant_color'],
-                    "style_tag": item['style_tag'],
-                    "image_url": item['image_url']
-                })
-            return formatted_wardrobe
-            
-        # Map categories to search keywords for high-quality fashion images
-        image_keywords = {
-            "top": "designer shirt luxury blouse couture top",
-            "pant": "high-fashion trousers tailored pants aesthetic bottom",
-            "shoes": "premium sneakers luxury heels boots high-fashion footwear",
-            "accessory": "luxury jewelry high-fashion accessory designer bag"
-        }
-        keyword = image_keywords.get(category.lower(), "fashion clothing")
-        
+        from services.image_search_service import image_search_service
+
         prompt = f"""
-        Suggest 6 '{category}' items for a '{vibe}' vibe.
+        Suggest 6 elite FEMALE '{category}' items for a user with a '{vibe}' aesthetic.
         
-        Strict Sourcing Preference: {sourcing}
-        - If sourcing is 'wardrobe', you MUST ONLY pick items from the 'User's Wardrobe Items' list. DO NOT provide ecommerce suggestions.
-        - If sourcing is 'hybrid', you MUST provide a mix of items from the 'User's Wardrobe Items' list AND new 'ecommerce' suggestions that complement them.
+        STRICT RULES:
+        1. NO MALE CLOTHING. Only female-only apparel.
+        2. Match the '{vibe}' theme exactly.
+        3. REALISTIC PRICING: Provide estimated prices consistent with the Indian market (Myntra/Amazon India). 
+           - Tops: ₹499 - ₹2499, Kurtas: ₹799 - ₹3999, Jeans: ₹999 - ₹3499
+           - Footwear: ₹799 - ₹4999, Accessories: ₹299 - ₹1999
+        4. DESCRIPTION: Provide a 1-sentence stylish description for each item.
         
-        User's Wardrobe Items: {json.dumps(relevant_wardrobe)}
+        Filters: Max Budget: {filters.get('budget', 'Any')}, Color: {filters.get('color', 'Any')}, Size: {filters.get('size', 'Any')}
+        Vibe-Relevant Wardrobe: {json.dumps(relevant_wardrobe[:3])}
         
-        Respond with a JSON array of 6 items. Each item must have:
-        - name: (detailed name)
-        - source: "wardrobe" or "ecommerce"
-        - item_id: (UUID if wardrobe, else null)
-        - color: (string)
-        - style_tag: (string)
-        - image_url: (If source is wardrobe, use item's image_url. If source is ecommerce, provide a UNIQUE ID from 100 to 999)
+        Respond ONLY with a JSON array:
+        {{
+          "items": [
+            {{
+              "name": "(creative, specific name)",
+              "description": "(1-sentence description)",
+              "source": "wardrobe" or "ecommerce",
+              "item_id": (UUID),
+              "color": "(precise color)",
+              "style_tag": "{vibe}",
+              "price": "(Estimated REALISTIC Price in INR)",
+              "size": "{filters.get('size', 'M')}",
+              "image_query": "(3-word Myntra search query, e.g. 'maroon embroidered kurta')"
+            }}
+          ]
+        }}
         """
         
         try:
             completion = self.client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
-                messages=[{"role": "user", "content": prompt}],
+                messages=[{"role": "system", "content": f"You are a professional female fashion stylist for {vibe} aesthetic."}, {"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
             data = json.loads(completion.choices[0].message.content)
-            items = data.get('items', data.get('suggestions', data.get('options', [])))
-            
-            # Post-filter to strictly enforce wardrobe injection if AI missed it in hybrid mode
-            if sourcing == 'hybrid':
-                wardrobe_ids_in_result = [it.get('item_id') for it in items if it.get('source') == 'wardrobe']
-                # If AI ignored wardrobe, force include at least 2 if available
-                if not wardrobe_ids_in_result and relevant_wardrobe:
+            items = data.get('items', [])
+
+            # Force inject wardrobe if hybrid and AI missed it
+            if sourcing == 'hybrid' and relevant_wardrobe:
+                picked_wardrobe = [it.get('item_id') for it in items if str(it.get('source', '')).lower() == 'wardrobe']
+                if not picked_wardrobe:
                     for i in range(min(2, len(relevant_wardrobe))):
-                        w_item = relevant_wardrobe[i]
-                        items.insert(0, {
-                            "name": f"{w_item['dominant_color']} {w_item['item_type']}",
-                            "source": "wardrobe",
-                            "item_id": w_item['id'],
-                            "color": w_item['dominant_color'],
-                            "style_tag": w_item['style_tag'],
-                            "image_url": w_item['image_url']
-                        })
-                    items = items[:6] # Keep it to 6
-            
+                        w = relevant_wardrobe[i]
+                        items.insert(0, {"name": f"{w['dominant_color']} {w['item_type']}", "source": "wardrobe", "item_id": w['id'], "color": w['dominant_color'], "style_tag": w['style_tag'], "image_url": w['image_url'], "price": "Owned", "size": "My Size"})
+                    items = items[:6]
+
             for item in items:
-                if item.get('source') == 'ecommerce':
-                    # Use a reliable Unsplash Source URL with keywords and the random ID for uniqueness
-                    random_id = item.get('image_url', '123')
-                    item['image_url'] = f"https://source.unsplash.com/featured/800x1200?{keyword.replace(' ', ',')}&sig={random_id}"
+                src_val = str(item.get('source', '')).lower()
+                item['source'] = src_val
+
+                if src_val == 'ecommerce':
+                    # USER PROVIDED PLACEHOLDER: Using the local project asset
+                    item['image_url'] = "/statics/images/place_holder.jpg"
                     
-                    shop = ecommerce_service.generate_product_suggestion(
-                        category, item.get('name', ''), item.get('color', ''), item.get('style_tag', '')
-                    )
-                    item.update({
-                        "amazon": shop['amazon_link'],
-                        "myntra": shop['myntra_link'],
-                        "flipkart": shop['flipkart_link']
-                    })
-                elif item.get('source') == 'wardrobe' and not item.get('image_url'):
-                    # Fallback for wardrobe items if AI missed the image_url
-                    match = next((w for w in relevant_wardrobe if w['id'] == item.get('item_id')), None)
-                    if match:
-                        item['image_url'] = match['image_url']
+                    shop = ecommerce_service.generate_product_suggestion(category, item.get('name', ''), item.get('color', ''), item.get('style_tag', ''))
+                    item.update({"amazon": shop['amazon_link'], "myntra": shop['myntra_link'], "flipkart": shop['flipkart_link']})
+                elif src_val == 'wardrobe' and not item.get('image_url'):
+                    match = next((w for w in cat_wardrobe if w['id'] == item.get('item_id')), None)
+                    if match: item['image_url'] = match['image_url']
 
             return items
         except Exception as e:
-            print(f"Error getting category suggestions: {e}")
+            print(f"Error in recommendation logic: {e}")
             return []
 
 recommendation_engine = RecommendationEngine()

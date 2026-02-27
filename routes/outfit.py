@@ -19,11 +19,10 @@ def get_category_options():
     category = data.get('category', 'top')
     vibe = data.get('vibe', 'General')
     sourcing = data.get('sourcing', 'wardrobe')
+    filters = data.get('filters', {})
     
-    # Logic to fetch items based on category and sourcing
-    # This will blend wardrobe items and ecommerce suggestions
     try:
-        options = recommendation_engine.get_category_suggestions(user_id, category, vibe, sourcing)
+        options = recommendation_engine.get_category_suggestions(user_id, category, vibe, sourcing, filters)
         return jsonify({"status": "success", "options": options})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

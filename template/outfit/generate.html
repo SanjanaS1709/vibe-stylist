@@ -253,13 +253,97 @@
         }
 
         .select-card {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(212, 175, 55, 0.1);
             border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
             transition: 0.3s;
             position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-info {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .price-tag {
+            color: var(--soft-gold);
+            font-weight: 700;
+        }
+
+        /* FILTER BAR */
+        .filter-bar {
+            display: flex;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-item label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .filter-item select,
+        .filter-item input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            padding: 8px 15px;
+            color: white;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .select-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+            background: #111;
+        }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         .select-card:hover {
@@ -677,12 +761,28 @@
                             <div class="vibe-info">FUSION</div>
                         </div>
                         <div class="vibe-card" id="vibe-2">
-                            <img src="{{ url_for('static', filename='images/fit2.jpeg') }}" alt="Freak">
-                            <div class="vibe-info">FREAK</div>
+                            <img src="{{ url_for('static', filename='images/clean.jpg') }}" alt="Clean Girl">
+                            <div class="vibe-info">CLEAN GIRL</div>
                         </div>
                         <div class="vibe-card" id="vibe-3">
                             <img src="{{ url_for('static', filename='images/ava3.jpeg') }}" alt="Minimalist">
                             <div class="vibe-info">MINIMALIST</div>
+                        </div>
+                        <div class="vibe-card" id="vibe-4">
+                            <img src="{{ url_for('static', filename='images/ethnic.png') }}" alt="Old Money">
+                            <div class="vibe-info">ETHNIC</div>
+                        </div>
+                        <div class="vibe-card" id="vibe-5">
+                            <img src="{{ url_for('static', filename='images/casual.jpg') }}" alt="Streetwear">
+                            <div class="vibe-info">CASUAL</div>
+                        </div>
+                        <div class="vibe-card" id="vibe-6">
+                            <img src="{{ url_for('static', filename='images/summer.jpg') }}" alt="Coquette">
+                            <div class="vibe-info">SUMMER VIBE</div>
+                        </div>
+                        <div class="vibe-card" id="vibe-7">
+                            <img src="{{ url_for('static', filename='images/soft.jpg') }}" alt="Dark Academia">
+                            <div class="vibe-info">SOFT GIRL</div>
                         </div>
                     </div>
 
@@ -717,7 +817,38 @@
         <!-- STEP 2: ITERATIVE (SELECTOR) -->
         <div class="wizard-step" id="step-2">
             <h1 class="main-heading" id="category-title">Choose Your Tops</h1>
+
+            <!-- FILTER BAR -->
             <div style="padding: 0 8%;">
+                <div class="filter-bar">
+                    <div class="filter-item">
+                        <label>Max Budget</label>
+                        <select id="filter-budget">
+                            <option value="">Any</option>
+                            <option value="1000">Under ₹1000</option>
+                            <option value="3000">Under ₹3000</option>
+                            <option value="5000">Under ₹5000</option>
+                            <option value="10000">Under ₹10000</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>Color</label>
+                        <input type="text" id="filter-color" placeholder="e.g. Black, Pink">
+                    </div>
+                    <div class="filter-item">
+                        <label>Size</label>
+                        <select id="filter-size">
+                            <option value="">Any</option>
+                            <option value="S">Small (S)</option>
+                            <option value="M">Medium (M)</option>
+                            <option value="L">Large (L)</option>
+                            <option value="XL">Extra Large (XL)</option>
+                        </select>
+                    </div>
+                    <button class="btn-gold" style="padding: 10px 25px; font-size: 14px; margin-top: 18px;"
+                        onclick="loadCategory()">Apply Filters</button>
+                </div>
+
                 <div id="item-grid" class="item-grid">
                     <!-- Items or Fallback here -->
                 </div>
@@ -796,11 +927,11 @@
             male: { name: 'Leo', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300', desc: "Leo focuses on structure, bold statements, and sharp urban sophistication for the modern man." }
         };
 
-        const vibeNames = ["BADDIE", "FUSION", "FREAK", "MINIMALIST"];
+        const vibeNames = ["BADDIE", "FUSION", "CLEAN GIRL", "MINIMALIST", "ETHNIC", "CASUAL", "SUMMER VIBE", "SOFT GIRL"];
         let v_idx = 0;
         function changeVibe(d) {
             document.getElementById(`vibe-${v_idx}`).classList.remove('active');
-            v_idx = (v_idx + d + 4) % 4;
+            v_idx = (v_idx + d + vibeNames.length) % vibeNames.length;
             document.getElementById(`vibe-${v_idx}`).classList.add('active');
             activeVibe = vibeNames[v_idx];
         }
@@ -833,12 +964,24 @@
             const fallback = document.getElementById('fallback-ui');
             grid.innerHTML = ''; grid.style.display = 'grid'; fallback.style.display = 'none';
 
+            // Catch filters
+            const filters = {
+                budget: document.getElementById('filter-budget').value,
+                color: document.getElementById('filter-color').value,
+                size: document.getElementById('filter-size').value
+            };
+
             document.getElementById('loading').style.display = 'flex';
             try {
                 const res = await fetch('/get-category-options', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ category: cat, vibe: activeVibe, sourcing: activeSourcing })
+                    body: JSON.stringify({
+                        category: cat,
+                        vibe: activeVibe,
+                        sourcing: activeSourcing,
+                        filters: filters
+                    })
                 });
                 const data = await res.json();
 
@@ -864,11 +1007,23 @@
                         }
 
                         card.innerHTML = `
-                            <img src="${item.image_url}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68ec25d43d?w=400';">
+                            <img src="${item.image_url}" alt="${item.name}" 
+                                 style="width: 100%; height: 350px; object-fit: cover; display: block; border-radius: 15px 15px 0 0;"
+                                 onerror="this.src='/statics/images/place_holder.jpg';">
+                            
                             <div class="check">✓</div>
-                            <div style="padding: 15px;">
-                                <div style="font-size: 13px; font-weight: 700; color: var(--gold);">${item.name}</div>
-                                <div style="font-size: 10px; opacity: 0.6; margin-top: 5px;">${item.source === 'wardrobe' ? '🏡 Local Wardrobe' : '🛒 Online Selection'}</div>
+                            <div class="item-info">
+                                <div style="font-size: 18px; font-weight: 800; color: var(--gold); margin-bottom: 10px; line-height: 1.2;">${item.name}</div>
+                                <div style="font-size: 13px; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4;">"${item.description || 'Perfectly matches your aesthetic vibe.'}"</div>
+                                
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                                    <span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-size: 11px;">🎨 ${item.color}</span>
+                                    <span style="background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 20px; font-size: 11px; color: var(--soft-gold);">📏 ${item.size}</span>
+                                </div>
+
+                                <div class="item-meta" style="margin-top: auto;">
+                                    <span class="price-tag" style="font-size: 18px; letter-spacing: 0.5px;">${item.price === 'Owned' ? '🏡 In My Wardrobe' : '₹' + item.price}</span>
+                                </div>
                             </div>
                             ${shopLinks}
                         `;
